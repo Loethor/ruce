@@ -72,7 +72,7 @@ impl GameState {
         println!("  +------------------------+");
 
         for row in (0..BOARD_SIZE).rev() {
-            print!("{} |", row);
+            print!("{} |", row + 1);
 
             for col in 0..BOARD_SIZE {
                 if let Some(piece) = self.board[row * BOARD_SIZE + col] {
