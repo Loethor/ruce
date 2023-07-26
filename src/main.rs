@@ -1,5 +1,6 @@
 mod piece;
 mod fen;
+mod board;
 
 use fen::fen_to_board;
 
@@ -11,7 +12,7 @@ fn main() {
     // Print the board in the standard orientation
     for rank in (0..8).rev() {
         for file in 0..8 {
-            let piece = board[rank * 8 + file];
+            let piece = board.squares[rank * 8 + file];
             match piece {
                 Some(p) => print!(" {} ", p.to_char()),
                 None => print!(" 0 "),
