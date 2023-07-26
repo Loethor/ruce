@@ -1,6 +1,7 @@
 mod piece;
 mod fen;
 mod board;
+mod moves;
 
 use fen::fen_to_board;
 
