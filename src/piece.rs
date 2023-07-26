@@ -1,24 +1,24 @@
 #[derive(Debug, Clone, Copy)]
 pub struct Piece {
     pub piece_type: PieceType,
-    pub color: PieceColor,
+    pub color: Color,
 }
 
 impl Piece {
     pub fn to_char(&self) -> char {
         match (self.piece_type, self.color) {
-            (PieceType::Pawn, PieceColor::White) => 'P',
-            (PieceType::Pawn, PieceColor::Black) => 'p',
-            (PieceType::Bishop, PieceColor::White) => 'B',
-            (PieceType::Bishop, PieceColor::Black) => 'b',
-            (PieceType::Knight, PieceColor::White) => 'N',
-            (PieceType::Knight, PieceColor::Black) => 'n',
-            (PieceType::Rook, PieceColor::White) => 'R',
-            (PieceType::Rook, PieceColor::Black) => 'r',
-            (PieceType::Queen, PieceColor::White) => 'Q',
-            (PieceType::Queen, PieceColor::Black) => 'q',
-            (PieceType::King, PieceColor::White) => 'K',
-            (PieceType::King, PieceColor::Black) => 'k',
+            (PieceType::Pawn, Color::White) => 'P',
+            (PieceType::Pawn, Color::Black) => 'p',
+            (PieceType::Bishop, Color::White) => 'B',
+            (PieceType::Bishop, Color::Black) => 'b',
+            (PieceType::Knight, Color::White) => 'N',
+            (PieceType::Knight, Color::Black) => 'n',
+            (PieceType::Rook, Color::White) => 'R',
+            (PieceType::Rook, Color::Black) => 'r',
+            (PieceType::Queen, Color::White) => 'Q',
+            (PieceType::Queen, Color::Black) => 'q',
+            (PieceType::King, Color::White) => 'K',
+            (PieceType::King, Color::Black) => 'k',
         }
     }
 }
@@ -34,7 +34,7 @@ pub enum PieceType {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum PieceColor {
+pub enum Color {
     White,
     Black,
 }
