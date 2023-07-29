@@ -1,3 +1,4 @@
+use crate::board::{Board, BOARD_SIZE};
 use crate::piece::{Piece, Color, PieceType};
 use crate::game_state::GameState;
 
@@ -5,7 +6,7 @@ use crate::game_state::GameState;
 // Function to parse FEN and populate the board
 pub fn fen_to_board(fen: &str) -> GameState {
     let mut game_state: GameState = GameState {
-        board: vec![None; 64],
+        board: Board::new_empty_board(),
         current_player: Color::White,
         turn: 1,
     };
@@ -75,7 +76,7 @@ pub fn fen_to_board(fen: &str) -> GameState {
                     }),
                     _ => None,
                 };
-                game_state.board[rank * 8 + file] = new_piece;
+                game_state.board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
                 file += 1;
             }
             'A'..='Z' => {
@@ -106,7 +107,7 @@ pub fn fen_to_board(fen: &str) -> GameState {
                     }),
                     _ => None,
                 };
-                game_state.board[rank * 8 + file] = new_piece;
+                game_state.board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
                 file += 1;
             }
             _ => break,
