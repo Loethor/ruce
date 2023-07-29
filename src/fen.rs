@@ -1,5 +1,5 @@
 use crate::piece::{Piece, Color, PieceType};
-use crate::game_state::{GameState};
+use crate::game_state::GameState;
 
 
 // Function to parse FEN and populate the board
@@ -22,12 +22,20 @@ pub fn fen_to_board(fen: &str) -> GameState {
     let _half_move_clock = iter.next().expect("Invalid FEN: missing half-move clock");
     let full_move_number = iter.next().expect("Invalid FEN: missing full move number");
 
-    // Parse the active color and current turn
-    if active_color == "b" {
-        game_state.current_player = Color::Black;
+    // Parse the active color 
+    match active_color {
+        "b" => game_state.current_player = Color::Black,
+        "w" => game_state.current_player = Color::White,
+        _ => panic!("Invalid active color in FEN string: {}", active_color)
     }
 
+    // Parse current turn
     game_state.turn = full_move_number.parse().expect("Invalid FEN: invalid full move number");
+
+    // TODO missing other rules:
+    // castling
+    // en passant
+    // half move clock
 
     for c in piece_placement.chars() {
         match c {
