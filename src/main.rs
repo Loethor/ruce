@@ -8,4 +8,5 @@ fn main() {
     let game_state = fen::fen_to_board(fen_string);
     game_state.board.print_board();
     let moves = game_state.generate_moves();
+    println!("There are {} moves in this position.", moves.len());
 }
