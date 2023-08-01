@@ -1,5 +1,5 @@
 use crate::board::{Board, BOARD_SIZE};
-use crate::piece::{Piece, Color, PieceType};
+use crate::board::piece::{Piece, Color, PieceType};
 use crate::game_state::GameState;
 
 

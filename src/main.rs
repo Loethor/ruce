@@ -1,7 +1,5 @@
-mod piece;
 mod fen;
 mod game_state;
-mod moves;
 mod board;
 
 fn main() {

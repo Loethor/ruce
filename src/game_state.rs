@@ -1,7 +1,6 @@
 use crate::board::Board;
-use crate::piece::Color;
-use crate::moves::Move;
-
+use crate::board::piece::Color;
+use crate::board::moves::Move;
 
 pub struct GameState {
     pub board: Board,

@@ -1,5 +1,8 @@
-use crate::piece::{Piece, PieceType, Color};
-use crate::moves::Move;
+pub mod moves;
+pub mod piece;
+
+use crate::board::piece::{Piece, PieceType, Color};
+use crate::board::moves::Move;
 
 
 pub const BOARD_SIZE:usize = 8;
@@ -16,7 +19,7 @@ impl Board {
 
     // Method to get a piece at a specific square on the board
     pub fn get_piece(&self, square: usize) -> Option<&Piece> {
-        self.squares.get(square).and_then(|piece| piece.as_ref())
+        self.squares[square].as_ref()
     }
 
     pub fn set_piece(&mut self, square: u8, piece: Option<Piece>) {
@@ -199,8 +202,8 @@ impl Board {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::piece::Piece;
-    use crate::piece::PieceType::Pawn;
+    use crate::board::piece::Piece;
+    use crate::board::piece::PieceType::Pawn;
 
     // Helper function to create a test board with a given piece at a specific position
     fn create_test_board_with_piece(piece_type: PieceType, piece_color: Color, row: usize, col: usize) -> Board {
