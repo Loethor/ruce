@@ -1,3 +1,5 @@
+pub mod knight;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Piece {
     pub piece_type: PieceType,

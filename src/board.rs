@@ -1,20 +1,27 @@
 pub mod moves;
 pub mod piece;
 
-use crate::board::piece::{Piece, PieceType, Color};
+use std::collections::HashMap;
+
 use crate::board::moves::Move;
+use crate::board::piece::{Color, Piece, PieceType};
 
+use crate::board::piece::knight::precalculate_knight_moves;
 
-pub const BOARD_SIZE:usize = 8;
+pub const BOARD_SIZE: usize = 8;
+
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
+    pub knight_moves_map: HashMap<u8, Vec<u8>>,
 }
 
 impl Board {
-
     pub fn new_empty_board() -> Self {
         let squares = vec![None; 64]; // Initialize the board with empty squares
-        Board { squares }
+        Board {
+            squares,
+            knight_moves_map: precalculate_knight_moves(),
+        }
     }
 
     // Method to get a piece at a specific square on the board
@@ -33,9 +40,10 @@ impl Board {
             for col in 0..BOARD_SIZE {
                 let square = row * BOARD_SIZE + col;
                 if let Some(piece) = self.get_piece(square) {
-
                     // Only check moves of the pieces that match the current player
-                    if piece.color != current_player{continue;}
+                    if piece.color != current_player {
+                        continue;
+                    }
 
                     let piece_moves = match piece.piece_type {
                         PieceType::Pawn => self.generate_pawn_moves(row, col, piece.color),
@@ -46,7 +54,7 @@ impl Board {
                         PieceType::King => self.generate_king_moves(row, col),
                     };
                     // Add it to the list if there is a move
-                    if let Some(valid_move) = piece_moves{
+                    if let Some(valid_move) = piece_moves {
                         moves.extend(valid_move);
                     }
                 }
@@ -61,11 +69,10 @@ impl Board {
 
         let mut moves: Vec<Move> = Vec::new();
 
-
         // Calculate the direction based on the piece color
         let direction = match piece_color {
-            Color::White => 1, // Moving up (increasing row index)
-            Color::Black => -1,  // Moving down (decreasing row index)
+            Color::White => 1,  // Moving up (increasing row index)
+            Color::Black => -1, // Moving down (decreasing row index)
         };
 
         // Calculate the initial square number
@@ -98,7 +105,8 @@ impl Board {
         // Check if it's the pawn's first move and if the two-square move is available
         if (row == 1 && piece_color == Color::White) || (row == 6 && piece_color == Color::Black) {
             // Calculate the target square number for the two-square move
-            let two_square_target = ((row as isize + 2 * direction) * BOARD_SIZE as isize + col as isize) as u8;
+            let two_square_target =
+                ((row as isize + 2 * direction) * BOARD_SIZE as isize + col as isize) as u8;
 
             // Check if the two-square move destination is empty and also the one-square move was empty
             if self.get_piece(two_square_target.into()).is_none() && is_one_move_allowed {
@@ -110,13 +118,14 @@ impl Board {
             }
         }
 
-        // Captures 
+        // Captures
         let left_new_col = col as isize - 1;
         let right_new_col = col as isize + 1;
 
         // Check if there's a capture on the left diagonal
         if left_new_col >= 0 {
-            let left_diagonal_target = ((row as isize + direction) * BOARD_SIZE as isize + left_new_col) as u8;
+            let left_diagonal_target =
+                ((row as isize + direction) * BOARD_SIZE as isize + left_new_col) as u8;
             if let Some(piece) = self.get_piece(left_diagonal_target.into()) {
                 if piece.color != piece_color {
                     // The left diagonal has an opponent's piece, so it's a valid capturing move
@@ -130,7 +139,8 @@ impl Board {
 
         // Check if there's a capture on the right diagonal
         if right_new_col < BOARD_SIZE as isize {
-            let right_diagonal_target = ((row as isize + direction) * BOARD_SIZE as isize + right_new_col) as u8;
+            let right_diagonal_target =
+                ((row as isize + direction) * BOARD_SIZE as isize + right_new_col) as u8;
             if let Some(piece) = self.get_piece(right_diagonal_target.into()) {
                 if piece.color != piece_color {
                     // The right diagonal has an opponent's piece, so it's a valid capturing move
@@ -147,7 +157,7 @@ impl Board {
 
         if !moves.is_empty() {
             return Some(moves);
-        }      
+        }
         None
     }
 
@@ -198,7 +208,6 @@ impl Board {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -206,7 +215,12 @@ mod tests {
     use crate::board::piece::PieceType::Pawn;
 
     // Helper function to create a test board with a given piece at a specific position
-    fn create_test_board_with_piece(piece_type: PieceType, piece_color: Color, row: usize, col: usize) -> Board {
+    fn create_test_board_with_piece(
+        piece_type: PieceType,
+        piece_color: Color,
+        row: usize,
+        col: usize,
+    ) -> Board {
         let mut board = Board::new_empty_board();
         let piece = Piece {
             color: piece_color,
@@ -224,7 +238,10 @@ mod tests {
         let row = 1;
         let col = 3;
         let square = row * BOARD_SIZE + col;
-        let piece = Piece {piece_type:Pawn, color:Color::White};
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::White,
+        };
         board.set_piece(square as u8, Some(piece));
 
         let moves = board.generate_pawn_moves(1, 3, piece.color).unwrap();
@@ -249,7 +266,10 @@ mod tests {
         let row = 6;
         let col = 3;
         let square = row * BOARD_SIZE + col;
-        let piece = Piece {piece_type:Pawn, color:Color::Black};
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
         board.set_piece(square as u8, Some(piece));
 
         let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
@@ -274,35 +294,46 @@ mod tests {
         let row = 6;
         let col = 3;
         let square = row * BOARD_SIZE + col;
-        let piece = Piece {piece_type:Pawn, color:Color::Black};
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
         board.set_piece(square as u8, Some(piece));
 
-        // piece blocking 
+        // piece blocking
         let row = 5;
         let col = 3;
         let square = row * BOARD_SIZE + col;
-        let blocking_piece = Piece {piece_type:Pawn, color:Color::Black};
+        let blocking_piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
         board.set_piece(square as u8, Some(blocking_piece));
 
         let moves = board.generate_pawn_moves(6, 3, piece.color);
-        assert!(moves.is_none()); 
+        assert!(moves.is_none());
     }
 
     #[test]
     fn test_generate_pawn_moves_captures() {
-
         let mut board = Board::new_empty_board();
         let row = 6;
         let col = 3;
         let square = row * BOARD_SIZE + col;
-        let piece = Piece {piece_type:Pawn, color:Color::Black};
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
         board.set_piece(square as u8, Some(piece));
 
-        // capturable piece 
+        // capturable piece
         let row = 5;
         let col = 2;
         let square = row * BOARD_SIZE + col;
-        let capturable_piece = Piece {piece_type:Pawn, color:Color::White};
+        let capturable_piece = Piece {
+            piece_type: Pawn,
+            color: Color::White,
+        };
         board.set_piece(square as u8, Some(capturable_piece));
 
         let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
@@ -317,5 +348,4 @@ mod tests {
 
     // TODO add test cases for en passant, and promotion
     // End Pawn tests
-
 }
