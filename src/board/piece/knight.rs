@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::board::BOARD_SIZE;
+use crate::board::{moves::Move, Board, BOARD_SIZE};
 
 const KNIGHT_MOVES: [(isize, isize); 8] = [
     (-2, 1),
@@ -39,6 +39,41 @@ pub fn precalculate_knight_moves() -> HashMap<u8, Vec<u8>> {
     }
 
     knight_moves_map
+}
+
+// Function to generate knight moves based on precalculated moves
+pub fn generate_knight_moves(
+    board: &Board,
+    row: usize,
+    col: usize,
+    precalculated_moves: &HashMap<u8, Vec<u8>>,
+) -> Option<Vec<Move>> {
+    let mut moves: Vec<Move> = Vec::new();
+    let square: u8 = (row * BOARD_SIZE + col) as u8;
+
+    if let Some(possible_moves) = precalculated_moves.get(&square) {
+        for &target_square in possible_moves {
+            let target_row = (target_square / BOARD_SIZE as u8) as usize;
+            let target_col = (target_square % BOARD_SIZE as u8) as usize;
+
+            // Check if the target square is empty or occupied by an opponent's piece
+            if board.get_piece(target_square.into()).map_or(true, |piece| {
+                piece.color != board.get_piece(square.into()).unwrap().color
+            }) {
+                let initial_square = (row * BOARD_SIZE + col) as u8;
+                moves.push(Move {
+                    initial_square,
+                    target_square,
+                });
+            }
+        }
+    }
+
+    if !moves.is_empty() {
+        Some(moves)
+    } else {
+        None
+    }
 }
 
 #[cfg(test)]

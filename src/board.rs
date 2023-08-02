@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use crate::board::moves::Move;
 use crate::board::piece::{Color, Piece, PieceType};
 
-use crate::board::piece::knight::precalculate_knight_moves;
+use crate::board::piece::knight::{generate_knight_moves, precalculate_knight_moves};
 
 pub const BOARD_SIZE: usize = 8;
 
@@ -48,7 +48,9 @@ impl Board {
                     let piece_moves = match piece.piece_type {
                         PieceType::Pawn => self.generate_pawn_moves(row, col, piece.color),
                         PieceType::Bishop => self.generate_bishop_moves(row, col),
-                        PieceType::Knight => self.generate_knight_moves(row, col),
+                        PieceType::Knight => {
+                            generate_knight_moves(&self, row, col, &self.knight_moves_map)
+                        }
                         PieceType::Rook => self.generate_rook_moves(row, col),
                         PieceType::Queen => self.generate_queen_moves(row, col),
                         PieceType::King => self.generate_king_moves(row, col),
@@ -348,4 +350,36 @@ mod tests {
 
     // TODO add test cases for en passant, and promotion
     // End Pawn tests
+
+    #[test]
+    fn test_generate_knight_moves_in_center() {
+        let mut board = Board::new_empty_board();
+        let row = 4;
+        let col = 4;
+        let square = row * BOARD_SIZE + col;
+        let piece = Piece {
+            piece_type: PieceType::Knight,
+            color: Color::Black,
+        };
+        board.set_piece(square as u8, Some(piece));
+
+        let moves = board.generate_moves(Color::Black);
+        assert_eq!(moves.len(), 8);
+    }
+
+    #[test]
+    fn test_generate_knight_moves_in_corner() {
+        let mut board = Board::new_empty_board();
+        let row = 0;
+        let col = 0;
+        let square = row * BOARD_SIZE + col;
+        let piece = Piece {
+            piece_type: PieceType::Knight,
+            color: Color::Black,
+        };
+        board.set_piece(square as u8, Some(piece));
+
+        let moves = board.generate_moves(Color::Black);
+        assert_eq!(moves.len(), 2);
+    }
 }
