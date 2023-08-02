@@ -7,7 +7,7 @@ pub struct Piece {
 }
 
 impl Piece {
-    pub fn to_char(&self) -> char {
+    pub fn piece_as_char(&self) -> char {
         match (self.piece_type, self.color) {
             (PieceType::Pawn, Color::White) => 'P',
             (PieceType::Pawn, Color::Black) => 'p',

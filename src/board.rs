@@ -194,7 +194,7 @@ impl Board {
             for col in 0..BOARD_SIZE {
                 let square = row * BOARD_SIZE + col;
                 if let Some(piece) = self.get_piece(square) {
-                    let piece_char = piece.to_char();
+                    let piece_char = piece.piece_as_char();
                     print!(" {} ", piece_char);
                 } else {
                     print!(" . ");

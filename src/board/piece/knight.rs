@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn test_precalculate_knight_moves() {
-        let mut knight_moves_map = precalculate_knight_moves();
+        let knight_moves_map = precalculate_knight_moves();
 
         // Test some specific squares
 
