@@ -1,5 +1,6 @@
 //! Module containing chess board related logic and structures.
 
+mod board_tests;
 /// Module containing chess move related logic and structures.
 pub mod moves;
 /// Module containing chess piece related logic and structures.
@@ -14,6 +15,7 @@ use std::str::FromStr;
 pub const BOARD_SIZE: usize = 8;
 
 /// Represents the chess board, containing squares with optional pieces.
+#[derive(PartialEq, Eq, Debug)]
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
 }
