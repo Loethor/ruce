@@ -42,16 +42,11 @@ pub fn precalculate_knight_moves() -> HashMap<u8, Vec<u8>> {
 }
 
 // Function to generate knight moves based on precalculated moves
-pub fn generate_knight_moves(
-    board: &Board,
-    row: usize,
-    col: usize,
-    precalculated_moves: &HashMap<u8, Vec<u8>>,
-) -> Option<Vec<Move>> {
+pub fn generate_knight_moves(board: &Board, row: usize, col: usize) -> Option<Vec<Move>> {
     let mut moves: Vec<Move> = Vec::new();
     let square: u8 = (row * BOARD_SIZE + col) as u8;
 
-    if let Some(possible_moves) = precalculated_moves.get(&square) {
+    if let Some(possible_moves) = board.knight_moves_map.get(&square) {
         for &target_square in possible_moves {
             let target_row = (target_square / BOARD_SIZE as u8) as usize;
             let target_col = (target_square % BOARD_SIZE as u8) as usize;

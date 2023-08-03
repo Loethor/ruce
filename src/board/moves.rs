@@ -1,6 +1,5 @@
-
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub struct Move {
-    pub initial_square:u8,
-    pub target_square:u8,
+    pub initial_square: u8,
+    pub target_square: u8,
 }

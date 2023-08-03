@@ -1,4 +1,11 @@
+use crate::board::moves::Move;
+use crate::board::Board;
+
+use self::knight::generate_knight_moves;
+use self::pawn::generate_pawn_moves;
+
 pub mod knight;
+pub mod pawn;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Piece {
@@ -7,7 +14,7 @@ pub struct Piece {
 }
 
 impl Piece {
-    pub fn piece_as_char(&self) -> char {
+    pub fn as_char(&self) -> char {
         match (self.piece_type, self.color) {
             (PieceType::Pawn, Color::White) => 'P',
             (PieceType::Pawn, Color::Black) => 'p',
@@ -21,6 +28,17 @@ impl Piece {
             (PieceType::Queen, Color::Black) => 'q',
             (PieceType::King, Color::White) => 'K',
             (PieceType::King, Color::Black) => 'k',
+        }
+    }
+
+    pub fn generate_moves(&self, board: &Board, row: usize, col: usize) -> Option<Vec<Move>> {
+        match self.piece_type {
+            PieceType::Pawn => generate_pawn_moves(board, row, col, self.color),
+            PieceType::Bishop => generate_knight_moves(board, row, col),
+            PieceType::Knight => None,
+            PieceType::Rook => None,
+            PieceType::Queen => None,
+            PieceType::King => None,
         }
     }
 }
