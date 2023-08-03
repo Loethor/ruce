@@ -32,10 +32,6 @@ impl Board {
         self.squares[square as usize] = piece;
     }
 
-    pub fn set_concrete_piece(&mut self, square : u8, piece: Piece) {
-        self.squares[square as usize] = Some(piece);
-    }
-
     pub fn generate_moves(&self, current_player: Color) -> Vec<Move> {
         let mut moves: Vec<Move> = Vec::new();
 
@@ -264,12 +260,12 @@ impl FromStr for Board{
                 }
                 'a'..='z' => {
                     let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::Black)?;
-                    board.set_concrete_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
+                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), Some(new_piece));
                     file += 1;
                 }
                 'A'..='Z' => {
                     let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::White)?;
-                    board.set_concrete_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
+                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), Some(new_piece));
                     file += 1;
                 }
                 _ => break,
