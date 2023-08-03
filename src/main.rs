@@ -1,11 +1,12 @@
-use std::str::FromStr;
 use game_state::GameState;
+use std::str::FromStr;
 
-mod game_state;
 mod board;
+mod game_state;
 
 fn main() {
-    let game_state = GameState::from_str("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    let game_state =
+        GameState::from_str("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     if let Err(e) = game_state {
         println!("Error: {}", e);
         return;
