@@ -1,35 +1,62 @@
-mod board_tests;
-pub mod moves;
-pub mod piece;
+//! Module containing chess board related logic and structures.
 
-use std::str::FromStr;
+/// Module containing chess move related logic and structures.
+pub mod moves;
+/// Module containing chess piece related logic and structures.
+pub mod piece;
 
 use crate::board::moves::Move;
 use crate::board::piece::{Color, Piece, PieceType};
-
 use crate::game_state::ParseFenError;
+use std::str::FromStr;
 
+/// Represents the size of the chess board (number of rows and columns).
 pub const BOARD_SIZE: usize = 8;
-#[derive(Debug, PartialEq, Eq)]
+
+/// Represents the chess board, containing squares with optional pieces.
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
 }
 
 impl Board {
+    /// Creates a new empty chess board.
     pub fn new_empty_board() -> Self {
         let squares = vec![None; 64]; // Initialize the board with empty squares
         Board { squares }
     }
 
-    // Method to get a piece at a specific square on the board
+    /// Gets the piece at a specific square on the board.
+    ///
+    /// # Arguments
+    ///
+    /// * `square` - The index of the square (0 to 63) to get the piece from.
+    ///
+    /// # Returns
+    ///
+    /// An optional reference to the piece at the specified square, or `None` if the square is empty.
     pub fn get_piece(&self, square: usize) -> Option<&Piece> {
         self.squares[square].as_ref()
     }
 
+    /// Sets a piece at a specific square on the board.
+    ///
+    /// # Arguments
+    ///
+    /// * `square` - The index of the square (0 to 63) where the piece will be set.
+    /// * `piece` - The piece to be placed at the specified square.
     pub fn set_piece(&mut self, square: u8, piece: Piece) {
         self.squares[square as usize] = Some(piece);
     }
 
+    /// Generates all possible moves for the pieces of the specified player.
+    ///
+    /// # Arguments
+    ///
+    /// * `current_player` - The color of the current player (either `Color::White` or `Color::Black`).
+    ///
+    /// # Returns
+    ///
+    /// A vector containing all valid moves for the pieces of the current player.
     pub fn generate_moves(&self, current_player: Color) -> Vec<Move> {
         let mut moves: Vec<Move> = Vec::new();
 
@@ -57,10 +84,22 @@ impl Board {
                 }
             }
         }
+        println!("\n");
         println!("There are {} moves in this position.", moves.len());
         moves
     }
 
+    /// Generates all possible moves for a pawn at the specified position.
+    ///
+    /// # Arguments
+    ///
+    /// * `row` - The row (0 to 7) of the pawn.
+    /// * `col` - The column (0 to 7) of the pawn.
+    /// * `piece_color` - The color of the pawn (either `Color::White` or `Color::Black`).
+    ///
+    /// # Returns
+    ///
+    /// An optional vector containing all valid moves for the pawn, or `None` if no moves are possible.
     fn generate_pawn_moves(&self, row: usize, col: usize, piece_color: Color) -> Option<Vec<Move>> {
         // TODO create pawn.rs and move it there?
 
