@@ -20,7 +20,7 @@ impl GameState {
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum ParseFenError{
-    #[error("Invalid FEN: {0}")]
+    #[error("Invalid character(s) in FEN! First invalid character: {0}")]
     InvalidPiecePlacement(String),
 }
     
