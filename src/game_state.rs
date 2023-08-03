@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use thiserror::Error;
 
 use crate::board::Board;
 use crate::board::piece::Color;
@@ -17,9 +18,10 @@ impl GameState {
     
 }
 
-#[derive(Debug, PartialEq, Eq)]
-pub struct ParseFenError{
-    pub message: String,
+#[derive(Error, Debug, PartialEq, Eq)]
+pub enum ParseFenError{
+    #[error("Invalid FEN: {0}")]
+    InvalidPiecePlacement(String),
 }
     
 
@@ -34,7 +36,7 @@ impl FromStr for GameState{
     fn from_str(fen : &str) -> Result<Self, Self::Err> {
 
         let mut iter = fen.split_whitespace();
-        
+
         // Parse the FEN string
         let piece_placement = iter.next().expect("Invalid FEN: missing piece placement");
         let active_color = iter.next().expect("Invalid FEN: missing active color");

@@ -236,7 +236,7 @@ fn char_to_piece(piece : &str, color : Color) -> Result<Piece, ParseFenError>{
             piece_type: PieceType::King,
             color: color,
         }),
-        _ => Err(ParseFenError{message: "Invalid piece type".to_string()}),
+        _ => Err(ParseFenError::InvalidPiecePlacement(piece.to_string())),
     };
 }
 

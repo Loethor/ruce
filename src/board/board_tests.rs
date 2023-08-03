@@ -10,6 +10,12 @@ mod board_tests{
         let board_hardcoded = starting_position();
         assert_eq!(board_from_fen, board_hardcoded);
     }
+
+    #[test]
+    fn test_error_fen_string(){
+        let board_from_fen = Board::from_str("rnbqkbna/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR").unwrap_err();
+        assert_eq!(board_from_fen, ParseFenError::InvalidPiecePlacement("a".to_string()));
+    }
 }
 #[cfg(test)]
 fn starting_position() -> Board {
