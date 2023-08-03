@@ -28,8 +28,8 @@ impl Board {
         self.squares[square].as_ref()
     }
 
-    pub fn set_piece(&mut self, square: u8, piece: Option<Piece>) {
-        self.squares[square as usize] = piece;
+    pub fn set_piece(&mut self, square: u8, piece: Piece) {
+        self.squares[square as usize] = Some(piece);
     }
 
     pub fn generate_moves(&self, current_player: Color) -> Vec<Move> {
@@ -260,12 +260,12 @@ impl FromStr for Board{
                 }
                 'a'..='z' => {
                     let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::Black)?;
-                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), Some(new_piece));
+                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
                     file += 1;
                 }
                 'A'..='Z' => {
                     let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::White)?;
-                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), Some(new_piece));
+                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
                     file += 1;
                 }
                 _ => break,
@@ -302,7 +302,7 @@ mod tests {
         let col = 3;
         let square = row * BOARD_SIZE + col;
         let piece = Piece {piece_type:Pawn, color:Color::White};
-        board.set_piece(square as u8, Some(piece));
+        board.set_piece(square as u8, piece);
 
         let moves = board.generate_pawn_moves(1, 3, piece.color).unwrap();
         assert_eq!(moves.len(), 2);
@@ -327,7 +327,7 @@ mod tests {
         let col = 3;
         let square = row * BOARD_SIZE + col;
         let piece = Piece {piece_type:Pawn, color:Color::Black};
-        board.set_piece(square as u8, Some(piece));
+        board.set_piece(square as u8, piece);
 
         let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
         assert_eq!(moves.len(), 2);
@@ -352,14 +352,14 @@ mod tests {
         let col = 3;
         let square = row * BOARD_SIZE + col;
         let piece = Piece {piece_type:Pawn, color:Color::Black};
-        board.set_piece(square as u8, Some(piece));
+        board.set_piece(square as u8, piece);
 
         // piece blocking 
         let row = 5;
         let col = 3;
         let square = row * BOARD_SIZE + col;
         let blocking_piece = Piece {piece_type:Pawn, color:Color::Black};
-        board.set_piece(square as u8, Some(blocking_piece));
+        board.set_piece(square as u8, blocking_piece);
 
         let moves = board.generate_pawn_moves(6, 3, piece.color);
         assert!(moves.is_none()); 
@@ -373,14 +373,14 @@ mod tests {
         let col = 3;
         let square = row * BOARD_SIZE + col;
         let piece = Piece {piece_type:Pawn, color:Color::Black};
-        board.set_piece(square as u8, Some(piece));
+        board.set_piece(square as u8, piece);
 
         // capturable piece 
         let row = 5;
         let col = 2;
         let square = row * BOARD_SIZE + col;
         let capturable_piece = Piece {piece_type:Pawn, color:Color::White};
-        board.set_piece(square as u8, Some(capturable_piece));
+        board.set_piece(square as u8, capturable_piece);
 
         let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
         assert_eq!(moves.len(), 3);
