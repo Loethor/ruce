@@ -2,18 +2,12 @@ use crate::board::{moves::Move, Board, BOARD_SIZE};
 
 use super::Color;
 
-fn one_square_move(
-    board: &Board,
-    initial_square: u8,
-    row: usize,
-    col: usize,
-    new_row: usize,
-) -> Option<Move> {
+fn one_square_move(board: &Board, initial_square: u8, col: u8, new_row: u8) -> Option<Move> {
     // Calculate the target square number
-    let target_square = (new_row * BOARD_SIZE + col) as u8;
+    let target_square = new_row * BOARD_SIZE + col;
 
     // Check if destination is empty
-    if board.get_piece(target_square.into()).is_none() {
+    if board.get_piece(target_square).is_none() {
         return Some(Move {
             initial_square,
             target_square,
@@ -25,8 +19,8 @@ fn one_square_move(
 fn two_square_move(
     board: &Board,
     initial_square: u8,
-    row: usize,
-    col: usize,
+    row: u8,
+    col: u8,
     is_one_move_allowed: bool,
     direction: isize,
     color: Color,
@@ -38,7 +32,7 @@ fn two_square_move(
             ((row as isize + 2 * direction) * BOARD_SIZE as isize + col as isize) as u8;
 
         // Check if the two-square move destination is empty and also the one-square move was empty
-        if board.get_piece(two_square_target.into()).is_none() && is_one_move_allowed {
+        if board.get_piece(two_square_target).is_none() && is_one_move_allowed {
             // The two-square move is available, add it to the list of valid moves
             return Some(Move {
                 initial_square,
@@ -52,7 +46,7 @@ fn two_square_move(
 fn capture_moves(
     board: &Board,
     initial_square: u8,
-    row: usize,
+    row: u8,
     direction: isize,
     new_col: isize,
     color: Color,
@@ -60,7 +54,7 @@ fn capture_moves(
     // Check if there's a capture on the left diagonal
     if new_col >= 0 && new_col < BOARD_SIZE as isize {
         let diagonal_target = ((row as isize + direction) * BOARD_SIZE as isize + new_col) as u8;
-        if let Some(piece) = board.get_piece(diagonal_target.into()) {
+        if let Some(piece) = board.get_piece(diagonal_target) {
             if piece.color != color {
                 // The left diagonal has an opponent's piece, so it's a valid capturing move
                 return Some(Move {
@@ -73,12 +67,7 @@ fn capture_moves(
     None
 }
 
-pub fn generate_pawn_moves(
-    board: &Board,
-    row: usize,
-    col: usize,
-    color: Color,
-) -> Option<Vec<Move>> {
+pub fn generate_pawn_moves(board: &Board, row: u8, col: u8, color: Color) -> Option<Vec<Move>> {
     let mut moves: Vec<Move> = Vec::new();
 
     // Calculate the direction based on the piece color
@@ -88,10 +77,10 @@ pub fn generate_pawn_moves(
     };
 
     // Calculate the initial square number
-    let initial_square = (row * BOARD_SIZE + col) as u8;
+    let initial_square = row * BOARD_SIZE + col;
 
     // Calculate the destination row for the pawn's move
-    let new_row = (row as isize + direction) as usize;
+    let new_row = (row as isize + direction) as u8;
 
     // Ensure that the destination row is within bounds
     if new_row >= BOARD_SIZE {
@@ -102,7 +91,7 @@ pub fn generate_pawn_moves(
     let mut is_one_move_allowed = false;
 
     // One square movement
-    if let Some(move_) = one_square_move(board, initial_square, row, col, new_row) {
+    if let Some(move_) = one_square_move(board, initial_square, col, new_row) {
         is_one_move_allowed = true;
         moves.push(move_);
     }
@@ -171,7 +160,7 @@ mod tests {
             piece_type: Pawn,
             color: White,
         };
-        board.set_piece(square as u8, Some(piece));
+        board.set_piece(square, Some(piece));
         let moves = piece.generate_moves(&board, row, col).unwrap();
 
         assert_eq!(moves.len(), 2);
@@ -199,7 +188,7 @@ mod tests {
             piece_type: Pawn,
             color: Black,
         };
-        board.set_piece(square as u8, Some(piece));
+        board.set_piece(square, Some(piece));
         let moves = piece.generate_moves(&board, row, col).unwrap();
 
         assert_eq!(moves.len(), 2);
@@ -235,8 +224,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -273,8 +262,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -311,8 +300,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -355,8 +344,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -393,8 +382,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -437,8 +426,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -475,8 +464,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -513,8 +502,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -551,8 +540,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -595,8 +584,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -639,8 +628,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = white_pawn.generate_moves(&board, row, col);
 
@@ -665,8 +654,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square as u8, Some(white_pawn));
-        board.set_piece(black_pawn_square as u8, Some(black_pawn));
+        board.set_piece(white_pawn_square, Some(white_pawn));
+        board.set_piece(black_pawn_square, Some(black_pawn));
 
         let moves = black_pawn.generate_moves(&board, row, col);
 

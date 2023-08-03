@@ -19,17 +19,17 @@ pub fn precalculate_knight_moves() -> HashMap<u8, Vec<u8>> {
 
     for row in 0..BOARD_SIZE {
         for col in 0..BOARD_SIZE {
-            let square_index = (row * BOARD_SIZE + col) as u8;
+            let square_index = row * BOARD_SIZE + col;
             let mut knight_moves: Vec<u8> = Vec::new();
 
             // Calculate all possible knight moves from the current square
             for &(dr, dc) in &KNIGHT_MOVES {
-                let new_row = (row as isize + dr) as usize;
-                let new_col = (col as isize + dc) as usize;
+                let new_row = (row as isize + dr) as u8;
+                let new_col = (col as isize + dc) as u8;
 
                 // Check if the new coordinates are within the board boundaries
                 if new_row < BOARD_SIZE && new_col < BOARD_SIZE {
-                    let target_square = (new_row * BOARD_SIZE + new_col) as u8;
+                    let target_square = new_row * BOARD_SIZE + new_col;
                     knight_moves.push(target_square);
                 }
             }
@@ -42,20 +42,17 @@ pub fn precalculate_knight_moves() -> HashMap<u8, Vec<u8>> {
 }
 
 // Function to generate knight moves based on precalculated moves
-pub fn generate_knight_moves(board: &Board, row: usize, col: usize) -> Option<Vec<Move>> {
+pub fn generate_knight_moves(board: &Board, row: u8, col: u8) -> Option<Vec<Move>> {
     let mut moves: Vec<Move> = Vec::new();
-    let square: u8 = (row * BOARD_SIZE + col) as u8;
+    let square: u8 = row * BOARD_SIZE + col;
 
     if let Some(possible_moves) = board.knight_moves_map.get(&square) {
         for &target_square in possible_moves {
-            let target_row = (target_square / BOARD_SIZE as u8) as usize;
-            let target_col = (target_square % BOARD_SIZE as u8) as usize;
-
             // Check if the target square is empty or occupied by an opponent's piece
-            if board.get_piece(target_square.into()).map_or(true, |piece| {
-                piece.color != board.get_piece(square.into()).unwrap().color
+            if board.get_piece(target_square).map_or(true, |piece| {
+                piece.color != board.get_piece(square).unwrap().color
             }) {
-                let initial_square = (row * BOARD_SIZE + col) as u8;
+                let initial_square = row * BOARD_SIZE + col;
                 moves.push(Move {
                     initial_square,
                     target_square,
@@ -112,7 +109,7 @@ mod tests {
         let knight_moves_map = precalculate_knight_moves();
 
         // Test all squares on the board to ensure the target squares are within valid indices.
-        for (square_index, knight_moves) in knight_moves_map.iter() {
+        for (_square_index, knight_moves) in knight_moves_map.iter() {
             for target_square in knight_moves {
                 assert!(
                     (0..64).contains(target_square),
