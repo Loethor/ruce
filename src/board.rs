@@ -1,11 +1,17 @@
 pub mod moves;
 pub mod piece;
+mod board_tests;
+
+use std::str::FromStr;
 
 use crate::board::piece::{Piece, PieceType, Color};
 use crate::board::moves::Move;
 
+use crate::game_state::ParseFenError;
+
 
 pub const BOARD_SIZE:usize = 8;
+#[derive(Debug, PartialEq, Eq)]
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
 }
@@ -24,6 +30,10 @@ impl Board {
 
     pub fn set_piece(&mut self, square: u8, piece: Option<Piece>) {
         self.squares[square as usize] = piece;
+    }
+
+    pub fn set_concrete_piece(&mut self, square : u8, piece: Piece) {
+        self.squares[square as usize] = Some(piece);
     }
 
     pub fn generate_moves(&self, current_player: Color) -> Vec<Move> {
@@ -198,6 +208,77 @@ impl Board {
     }
 }
 
+// Errors are raised if the FEN string is invalid
+// i.e., different that pbnrqk
+fn char_to_piece(piece : &str, color : Color) -> Result<Piece, ParseFenError>{
+    return match piece {
+        "p" => Ok(Piece {
+            piece_type: PieceType::Pawn,
+            color: color,
+        }),
+        "b" => Ok(Piece {
+            piece_type: PieceType::Bishop,
+            color: color,
+        }),
+        "n" => Ok(Piece {
+            piece_type: PieceType::Knight,
+            color: color,
+        }),
+        "r" => Ok(Piece {
+            piece_type: PieceType::Rook,
+            color: color,
+        }),
+        "q" => Ok(Piece {
+            piece_type: PieceType::Queen,
+            color: color,
+        }),
+        "k" => Ok(Piece {
+            piece_type: PieceType::King,
+            color: color,
+        }),
+        _ => Err(ParseFenError{message: "Invalid piece type".to_string()}),
+    };
+}
+
+
+// Errors are raised if the FEN string is invalid
+// char_to_piece is responsible for raising the error
+impl FromStr for Board{
+    type Err = ParseFenError;
+
+    fn from_str(piece_placement: &str) -> Result<Self, Self::Err> {
+        let mut board = Board::new_empty_board();
+
+        let mut rank = 7;
+        let mut file = 0;
+
+        for c in piece_placement.chars() {
+            match c {
+                '0'..='8' => {
+                    let empty_squares = c.to_digit(10).unwrap() as usize;
+                    file += empty_squares;
+                }
+                '/' => {
+                    rank -= 1;
+                    file = 0;
+                }
+                'a'..='z' => {
+                    let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::Black)?;
+                    board.set_concrete_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
+                    file += 1;
+                }
+                'A'..='Z' => {
+                    let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::White)?;
+                    board.set_concrete_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
+                    file += 1;
+                }
+                _ => break,
+            }
+        }
+        Ok(board)
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -269,7 +350,7 @@ mod tests {
     }
 
     #[test]
-    fn test_generate_pawn_moves_no_moves() {
+        fn test_generate_pawn_moves_no_moves() {
         let mut board = Board::new_empty_board();
         let row = 6;
         let col = 3;
