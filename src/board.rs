@@ -1,4 +1,8 @@
+//! Module containing chess board related logic and structures.
+
+/// Module containing chess move related logic and structures.
 pub mod moves;
+/// Module containing chess piece related logic and structures.
 pub mod piece;
 
 use std::collections::HashMap;
@@ -28,10 +32,25 @@ impl Board {
         self.squares[square as usize].as_ref()
     }
 
+    /// Sets a piece at a specific square on the board.
+    ///
+    /// # Arguments
+    ///
+    /// * `square` - The index of the square (0 to 63) where the piece will be set.
+    /// * `piece` - The piece to be placed at the specified square. Use `None` to clear the square.
     pub fn set_piece(&mut self, square: u8, piece: Option<Piece>) {
         self.squares[square as usize] = piece;
     }
 
+    /// Generates all possible moves for the pieces of the specified player.
+    ///
+    /// # Arguments
+    ///
+    /// * `current_player` - The color of the current player (either `Color::White` or `Color::Black`).
+    ///
+    /// # Returns
+    ///
+    /// A vector containing all valid moves for the pieces of the current player.
     pub fn generate_moves(&self, current_player: Color) -> Vec<Move> {
         let mut moves: Vec<Move> = Vec::new();
 

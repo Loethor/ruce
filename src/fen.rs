@@ -81,7 +81,7 @@ pub fn fen_to_board(fen: &str) -> GameState {
                 };
                 game_state
                     .board
-                    .set_piece(rank * BOARD_SIZE + file, new_piece);
+                    .set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
                 file += 1;
             }
             'A'..='Z' => {
@@ -114,7 +114,7 @@ pub fn fen_to_board(fen: &str) -> GameState {
                 };
                 game_state
                     .board
-                    .set_piece(rank * BOARD_SIZE + file, new_piece);
+                    .set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
                 file += 1;
             }
             _ => break,

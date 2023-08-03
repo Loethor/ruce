@@ -43,6 +43,7 @@ impl Piece {
     }
 }
 
+/// Represents the type of a chess piece.
 #[derive(Debug, Clone, Copy)]
 pub enum PieceType {
     Pawn,
@@ -53,6 +54,7 @@ pub enum PieceType {
     King,
 }
 
+/// Represents the color of a chess piece.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Color {
     White,
