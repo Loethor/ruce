@@ -1,8 +1,6 @@
 //! Module containing chess board related logic and structures.
 
-/// Module containing chess move related logic and structures.
 pub mod moves;
-/// Module containing chess piece related logic and structures.
 pub mod piece;
 
 use std::collections::HashMap;
@@ -19,6 +17,25 @@ pub struct Board {
 }
 
 impl Board {
+    /// Creates a new empty chess board.
+    ///
+    /// This function initializes the board with empty squares, represented by `None`, and
+    /// precalculates the knight moves for each square using the `precalculate_knight_moves`
+    /// function. The knight moves are stored in a `HashMap` named `knight_moves_map`, where
+    /// each square's index (0 to 63) maps to a vector containing the indices of the squares
+    /// that a knight can move to from that square.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use chess_engine::board::Board;
+    ///
+    /// let board = Board::new_empty_board();
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// A new `Board` struct representing an empty chess board.
     pub fn new_empty_board() -> Self {
         let squares = vec![None; 64]; // Initialize the board with empty squares
         Board {
@@ -27,7 +44,39 @@ impl Board {
         }
     }
 
-    // Method to get a piece at a specific square on the board
+    /// Retrieves the piece located at the specified square on the board.
+    ///
+    /// # Arguments
+    ///
+    /// * `square`: The index of the square to retrieve the piece from.
+    ///             It is represented as a `u8` value, where the index starts from 0 (top-left square)
+    ///             and increases sequentially from left to right and top to bottom.
+    ///
+    /// # Returns
+    ///
+    /// Returns an `Option` containing a reference to the piece at the specified square.
+    /// - If the square is empty, it returns `None`.
+    /// - If the square contains a piece, it returns `Some(&Piece)`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use chess_engine::board::{Board, Color, Piece, PieceType};
+    ///
+    /// let mut board = Board::new_empty_board();
+    /// let piece = Piece {
+    ///     piece_type: PieceType::Pawn,
+    ///     color: Color::White,
+    /// };
+    /// board.set_piece(8, Some(piece)); // Set a pawn piece at square 8
+    ///
+    /// // Retrieve the piece at square 8
+    /// let retrieved_piece = board.get_piece(8);
+    /// assert_eq!(retrieved_piece, Some(&Piece {
+    ///     piece_type: PieceType::Pawn,
+    ///     color: Color::White,
+    /// }));
+    /// ```
     pub fn get_piece(&self, square: u8) -> Option<&Piece> {
         self.squares[square as usize].as_ref()
     }
@@ -74,6 +123,37 @@ impl Board {
         moves
     }
 
+    /// Prints the current state of the chess board.
+    ///
+    /// This function will print the chess board, displaying each piece's symbol at its respective square.
+    /// An empty square is represented by a dot (".") character. The board is printed with row numbers and column labels.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use chess_engine::board::{Board, Color, Piece, PieceType};
+    ///
+    /// let mut board = Board::new_empty_board();
+    /// let piece = Piece {
+    ///     piece_type: PieceType::Pawn,
+    ///     color: Color::White,
+    /// };
+    /// board.set_piece(8, Some(piece)); // Set a pawn piece at square 8
+    ///
+    /// board.print_board();
+    /// // The output should be:
+    /// //   +------------------------+
+    /// // 8 | .  .  .  .  .  .  .  . |
+    /// // 7 | .  .  .  .  .  .  .  . |
+    /// // 6 | .  .  .  .  .  .  .  . |
+    /// // 5 | .  .  .  .  .  .  .  . |
+    /// // 4 | .  .  .  .  .  .  .  . |
+    /// // 3 | .  .  .  .  .  .  .  . |
+    /// // 2 | .  .  .  .  .  .  .  . |
+    /// // 1 | P  .  .  .  .  .  .  . |
+    /// //   +------------------------+
+    /// //     a  b  c  d  e  f  g  h
+    /// ```
     pub fn print_board(&self) {
         println!("  +------------------------+");
         for row in (0..BOARD_SIZE).rev() {

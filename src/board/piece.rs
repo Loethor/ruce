@@ -1,3 +1,4 @@
+//! Module containing chess piece related logic and structures.
 use crate::board::moves::Move;
 use crate::board::Board;
 

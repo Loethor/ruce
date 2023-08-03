@@ -1,3 +1,5 @@
+//! Module containing pawn related logic.
+
 use crate::board::{moves::Move, Board, BOARD_SIZE};
 
 use super::Color;
@@ -67,6 +69,58 @@ fn capture_moves(
     None
 }
 
+/// Generate pawn moves for a specific position on the board.
+///
+/// Given a chess `board`, `row`, `col`, and the pawn's `color`, this function calculates all valid
+/// pawn moves for the pawn located at the specified position (`row`, `col`) on the board.
+/// It takes into consideration the pawn's color to determine the direction of movement.
+/// The function considers one-square moves, two-square moves for the pawn's first move,
+/// and capturing moves diagonally.
+/// The function also handles special moves like en passant and promotion, but these are not yet implemented.
+///
+/// The function returns an `Option<Vec<Move>>`, where `Some(moves)` contains a vector of `Move`
+/// structs representing the valid moves that the pawn can make. If no valid moves are found,
+/// `None` is returned.
+///
+/// # Arguments
+///
+/// * `board`: The chess board on which the pawn moves will be calculated.
+/// * `row`: The row coordinate (0-based) of the square where the pawn is located.
+/// * `col`: The column coordinate (0-based) of the square where the pawn is located.
+/// * `color`: The color of the pawn (either `Color::White` or `Color::Black`).
+///
+/// # Returns
+///
+/// An `Option<Vec<Move>>`, where `Some(moves)` contains the valid moves that the pawn can make,
+/// and `None` if no valid moves are found.
+///
+/// # Example
+///
+/// ```
+/// use chess_engine::board::{Board, generate_pawn_moves};
+/// use chess_engine::board::piece::{Color, Piece, PieceType};
+/// use chess_engine::board::moves::Move;
+///
+/// // Create an empty chess board
+/// let mut board = Board::new_empty_board();
+///
+/// // Place a white pawn on square 'd2' (index 11)
+/// let pawn = Piece {
+///     piece_type: PieceType::Pawn,
+///     color: Color::White,
+/// };
+/// board.set_piece(11, Some(pawn));
+///
+/// // Generate pawn moves for the pawn on 'd2'
+/// let moves = generate_pawn_moves(&board, 1, 3, Color::White);
+///
+/// // The valid pawn moves for 'd2' are 'd3' (one square move) and 'd4' (two square move).
+/// let expected_moves = vec![
+///     Move { initial_square: 11, target_square: 19 },
+///     Move { initial_square: 11, target_square: 27 },
+/// ];
+/// assert_eq!(moves.unwrap(), expected_moves);
+/// ```
 pub fn generate_pawn_moves(board: &Board, row: u8, col: u8, color: Color) -> Option<Vec<Move>> {
     let mut moves: Vec<Move> = Vec::new();
 
