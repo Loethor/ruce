@@ -1,5 +1,6 @@
 //! Module containing chess board related logic and structures.
 
+mod board_tests;
 /// Module containing chess move related logic and structures.
 pub mod moves;
 /// Module containing chess piece related logic and structures.
@@ -7,11 +8,14 @@ pub mod piece;
 
 use crate::board::moves::Move;
 use crate::board::piece::{Color, Piece, PieceType};
+use crate::game_state::ParseFenError;
+use std::str::FromStr;
 
 /// Represents the size of the chess board (number of rows and columns).
 pub const BOARD_SIZE: usize = 8;
 
 /// Represents the chess board, containing squares with optional pieces.
+#[derive(PartialEq, Eq, Debug)]
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
 }
@@ -41,9 +45,9 @@ impl Board {
     /// # Arguments
     ///
     /// * `square` - The index of the square (0 to 63) where the piece will be set.
-    /// * `piece` - The piece to be placed at the specified square. Use `None` to clear the square.
-    pub fn set_piece(&mut self, square: u8, piece: Option<Piece>) {
-        self.squares[square as usize] = piece;
+    /// * `piece` - The piece to be placed at the specified square.
+    pub fn set_piece(&mut self, square: u8, piece: Piece) {
+        self.squares[square as usize] = Some(piece);
     }
 
     /// Generates all possible moves for the pieces of the specified player.
@@ -242,144 +246,81 @@ impl Board {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::board::piece::Piece;
-    use crate::board::piece::PieceType::Pawn;
-
-    // Helper function to create a test board with a given piece at a specific position
-    fn create_test_board_with_piece(
-        piece_type: PieceType,
-        piece_color: Color,
-        row: usize,
-        col: usize,
-    ) -> Board {
-        let mut board = Board::new_empty_board();
-        let piece = Piece {
-            color: piece_color,
-            piece_type,
-        };
-        let square_index = row * BOARD_SIZE + col;
-        board.squares[square_index] = Some(piece);
-        board
+// Errors are raised if the FEN string is invalid
+// i.e., different that pbnrqk
+fn char_to_piece(piece: &str, color: Color) -> Result<Piece, ParseFenError> {
+    match piece {
+        "p" => Ok(Piece {
+            piece_type: PieceType::Pawn,
+            color,
+        }),
+        "b" => Ok(Piece {
+            piece_type: PieceType::Bishop,
+            color,
+        }),
+        "n" => Ok(Piece {
+            piece_type: PieceType::Knight,
+            color,
+        }),
+        "r" => Ok(Piece {
+            piece_type: PieceType::Rook,
+            color,
+        }),
+        "q" => Ok(Piece {
+            piece_type: PieceType::Queen,
+            color,
+        }),
+        "k" => Ok(Piece {
+            piece_type: PieceType::King,
+            color,
+        }),
+        _ => Err(ParseFenError::InvalidPiecePlacement(piece.to_string())),
     }
+}
 
-    // Pawn tests
-    #[test]
-    fn test_generate_pawn_moves_white() {
+impl FromStr for Board {
+    type Err = ParseFenError;
+
+    /// Errors are raised if the FEN string is invalid
+    /// char_to_piece is responsible for raising the error
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use chess::board::Board;
+    /// use std::str::FromStr;
+    ///
+    /// let board = Board::from_str("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR").unwrap();
+    /// ```
+    fn from_str(piece_placement: &str) -> Result<Self, Self::Err> {
         let mut board = Board::new_empty_board();
-        let row = 1;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let piece = Piece {
-            piece_type: Pawn,
-            color: Color::White,
-        };
-        board.set_piece(square as u8, Some(piece));
 
-        let moves = board.generate_pawn_moves(1, 3, piece.color).unwrap();
-        assert_eq!(moves.len(), 2);
+        let mut rank = 7;
+        let mut file = 0;
 
-        // Check that the pawn can move one square forward
-        assert!(moves.contains(&Move {
-            initial_square: 11,
-            target_square: 19,
-        }));
-
-        // Check that the pawn can move two squares forward from its starting position
-        assert!(moves.contains(&Move {
-            initial_square: 11,
-            target_square: 27,
-        }));
+        for c in piece_placement.chars() {
+            match c {
+                '0'..='8' => {
+                    let empty_squares = c.to_digit(10).unwrap() as usize;
+                    file += empty_squares;
+                }
+                '/' => {
+                    rank -= 1;
+                    file = 0;
+                }
+                'a'..='z' => {
+                    let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::Black)?;
+                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
+                    file += 1;
+                }
+                'A'..='Z' => {
+                    let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::White)?;
+                    board.set_piece((rank * BOARD_SIZE + file).try_into().unwrap(), new_piece);
+                    file += 1;
+                }
+                _ => break,
+            }
+        }
+        Ok(board)
     }
-
-    #[test]
-    fn test_generate_pawn_moves_black() {
-        let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let piece = Piece {
-            piece_type: Pawn,
-            color: Color::Black,
-        };
-        board.set_piece(square as u8, Some(piece));
-
-        let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
-        assert_eq!(moves.len(), 2);
-
-        // Check that the pawn can move one square forward
-        assert!(moves.contains(&Move {
-            initial_square: 51,
-            target_square: 43,
-        }));
-
-        // Check that the pawn can move two squares forward from its starting position
-        assert!(moves.contains(&Move {
-            initial_square: 51,
-            target_square: 35,
-        }));
-    }
-
-    #[test]
-    fn test_generate_pawn_moves_no_moves() {
-        let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let piece = Piece {
-            piece_type: Pawn,
-            color: Color::Black,
-        };
-        board.set_piece(square as u8, Some(piece));
-
-        // piece blocking
-        let row = 5;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let blocking_piece = Piece {
-            piece_type: Pawn,
-            color: Color::Black,
-        };
-        board.set_piece(square as u8, Some(blocking_piece));
-
-        let moves = board.generate_pawn_moves(6, 3, piece.color);
-        assert!(moves.is_none());
-    }
-
-    #[test]
-    fn test_generate_pawn_moves_captures() {
-        let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let piece = Piece {
-            piece_type: Pawn,
-            color: Color::Black,
-        };
-        board.set_piece(square as u8, Some(piece));
-
-        // capturable piece
-        let row = 5;
-        let col = 2;
-        let square = row * BOARD_SIZE + col;
-        let capturable_piece = Piece {
-            piece_type: Pawn,
-            color: Color::White,
-        };
-        board.set_piece(square as u8, Some(capturable_piece));
-
-        let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
-        assert_eq!(moves.len(), 3);
-
-        // Check that the pawn can move one square forward
-        assert!(moves.contains(&Move {
-            initial_square: 51,
-            target_square: 43,
-        }));
-    }
-
-    // TODO add test cases for en passant, and promotion
-    // End Pawn tests
 }
