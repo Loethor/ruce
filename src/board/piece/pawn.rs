@@ -214,7 +214,7 @@ mod tests {
             piece_type: Pawn,
             color: White,
         };
-        board.set_piece(square, Some(piece));
+        board.set_piece(square, piece);
         let moves = piece.generate_moves(&board, row, col).unwrap();
 
         assert_eq!(moves.len(), 2);
@@ -242,7 +242,7 @@ mod tests {
             piece_type: Pawn,
             color: Black,
         };
-        board.set_piece(square, Some(piece));
+        board.set_piece(square, piece);
         let moves = piece.generate_moves(&board, row, col).unwrap();
 
         assert_eq!(moves.len(), 2);
@@ -278,8 +278,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -316,8 +316,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -354,8 +354,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -398,8 +398,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -436,8 +436,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -480,8 +480,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -518,8 +518,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -556,8 +556,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = white_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -594,8 +594,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -638,8 +638,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = black_pawn.generate_moves(&board, row, col).unwrap();
 
@@ -682,8 +682,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = white_pawn.generate_moves(&board, row, col);
 
@@ -708,8 +708,8 @@ mod tests {
             color: Black,
         };
 
-        board.set_piece(white_pawn_square, Some(white_pawn));
-        board.set_piece(black_pawn_square, Some(black_pawn));
+        board.set_piece(white_pawn_square, white_pawn);
+        board.set_piece(black_pawn_square, black_pawn);
 
         let moves = black_pawn.generate_moves(&board, row, col);
 

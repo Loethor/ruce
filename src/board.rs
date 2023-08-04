@@ -1,16 +1,23 @@
 //! Module containing chess board related logic and structures.
 
+mod board_tests;
 pub mod moves;
 pub mod piece;
 
 use std::collections::HashMap;
 
 use crate::board::moves::Move;
-use crate::board::piece::{Color, Piece};
+use crate::board::piece::{Color, Piece, PieceType};
+use crate::game_state::ParseFenError;
+use std::str::FromStr;
 
 use self::piece::knight::precalculate_knight_moves;
 
+/// Represents the size of the chess board (number of rows and columns).
 pub const BOARD_SIZE: u8 = 8;
+
+/// Represents the chess board, containing squares with optional pieces.
+#[derive(PartialEq, Eq, Debug)]
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
     pub knight_moves_map: HashMap<u8, Vec<u8>>,
@@ -86,9 +93,9 @@ impl Board {
     /// # Arguments
     ///
     /// * `square` - The index of the square (0 to 63) where the piece will be set.
-    /// * `piece` - The piece to be placed at the specified square. Use `None` to clear the square.
-    pub fn set_piece(&mut self, square: u8, piece: Option<Piece>) {
-        self.squares[square as usize] = piece;
+    /// * `piece` - The piece to be placed at the specified square.
+    pub fn set_piece(&mut self, square: u8, piece: Piece) {
+        self.squares[square as usize] = Some(piece);
     }
 
     /// Generates all possible moves for the pieces of the specified player.
@@ -173,5 +180,84 @@ impl Board {
         }
         println!("  +------------------------+");
         println!("    a  b  c  d  e  f  g  h ");
+    }
+}
+
+// Errors are raised if the FEN string is invalid
+// i.e., different that pbnrqk
+fn char_to_piece(piece: &str, color: Color) -> Result<Piece, ParseFenError> {
+    match piece {
+        "p" => Ok(Piece {
+            piece_type: PieceType::Pawn,
+            color,
+        }),
+        "b" => Ok(Piece {
+            piece_type: PieceType::Bishop,
+            color,
+        }),
+        "n" => Ok(Piece {
+            piece_type: PieceType::Knight,
+            color,
+        }),
+        "r" => Ok(Piece {
+            piece_type: PieceType::Rook,
+            color,
+        }),
+        "q" => Ok(Piece {
+            piece_type: PieceType::Queen,
+            color,
+        }),
+        "k" => Ok(Piece {
+            piece_type: PieceType::King,
+            color,
+        }),
+        _ => Err(ParseFenError::InvalidPiecePlacement(piece.to_string())),
+    }
+}
+
+impl FromStr for Board {
+    type Err = ParseFenError;
+
+    /// Errors are raised if the FEN string is invalid
+    /// char_to_piece is responsible for raising the error
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use chess::board::Board;
+    /// use std::str::FromStr;
+    ///
+    /// let board = Board::from_str("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR").unwrap();
+    /// ```
+    fn from_str(piece_placement: &str) -> Result<Self, Self::Err> {
+        let mut board = Board::new_empty_board();
+
+        let mut rank: u8 = 7;
+        let mut file: u8 = 0;
+
+        for c in piece_placement.chars() {
+            match c {
+                '0'..='8' => {
+                    let empty_squares: u8 = c.to_digit(10).unwrap() as u8;
+                    file += empty_squares;
+                }
+                '/' => {
+                    rank -= 1;
+                    file = 0;
+                }
+                'a'..='z' => {
+                    let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::Black)?;
+                    board.set_piece(rank * BOARD_SIZE + file, new_piece);
+                    file += 1;
+                }
+                'A'..='Z' => {
+                    let new_piece = char_to_piece(&c.to_lowercase().to_string(), Color::White)?;
+                    board.set_piece(rank * BOARD_SIZE + file, new_piece);
+                    file += 1;
+                }
+                _ => break,
+            }
+        }
+        Ok(board)
     }
 }

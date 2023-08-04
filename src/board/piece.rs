@@ -8,7 +8,8 @@ use self::pawn::generate_pawn_moves;
 pub mod knight;
 pub mod pawn;
 
-#[derive(Debug, Clone, Copy)]
+/// Represents a chess piece, containing its type and color.
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub struct Piece {
     pub piece_type: PieceType,
     pub color: Color,
@@ -45,7 +46,7 @@ impl Piece {
 }
 
 /// Represents the type of a chess piece.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PieceType {
     Pawn,
     Bishop,
@@ -56,7 +57,7 @@ pub enum PieceType {
 }
 
 /// Represents the color of a chess piece.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Color {
     White,
     Black,
