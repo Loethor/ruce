@@ -252,3 +252,145 @@ fn starting_position() -> Board {
     );
     board_hardcoded
 }
+
+#[cfg(test)]
+mod move_tests {
+    use super::*;
+    use crate::board::piece::Piece;
+    use crate::board::piece::PieceType::Pawn;
+
+    /// Helper function to create a test board with a given piece at a specific position
+    fn create_test_board_with_piece(
+        piece_type: PieceType,
+        piece_color: Color,
+        row: usize,
+        col: usize,
+    ) -> Board {
+        let mut board = Board::new_empty_board();
+        let piece = Piece {
+            color: piece_color,
+            piece_type,
+        };
+        let square_index = row * BOARD_SIZE + col;
+        board.squares[square_index] = Some(piece);
+        board
+    }
+
+    // Pawn tests
+    #[test]
+    fn test_generate_pawn_moves_white() {
+        let mut board = Board::new_empty_board();
+        let row = 1;
+        let col = 3;
+        let square = row * BOARD_SIZE + col;
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::White,
+        };
+        board.set_piece(square as u8, piece);
+
+        let moves = board.generate_pawn_moves(1, 3, piece.color).unwrap();
+        assert_eq!(moves.len(), 2);
+
+        // Check that the pawn can move one square forward
+        assert!(moves.contains(&Move {
+            initial_square: 11,
+            target_square: 19,
+        }));
+
+        // Check that the pawn can move two squares forward from its starting position
+        assert!(moves.contains(&Move {
+            initial_square: 11,
+            target_square: 27,
+        }));
+    }
+
+    #[test]
+    fn test_generate_pawn_moves_black() {
+        let mut board = Board::new_empty_board();
+        let row = 6;
+        let col = 3;
+        let square = row * BOARD_SIZE + col;
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
+        board.set_piece(square as u8, piece);
+
+        let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
+        assert_eq!(moves.len(), 2);
+
+        // Check that the pawn can move one square forward
+        assert!(moves.contains(&Move {
+            initial_square: 51,
+            target_square: 43,
+        }));
+
+        // Check that the pawn can move two squares forward from its starting position
+        assert!(moves.contains(&Move {
+            initial_square: 51,
+            target_square: 35,
+        }));
+    }
+
+    #[test]
+    fn test_generate_pawn_moves_no_moves() {
+        let mut board = Board::new_empty_board();
+        let row = 6;
+        let col = 3;
+        let square = row * BOARD_SIZE + col;
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
+        board.set_piece(square as u8, piece);
+
+        // piece blocking
+        let row = 5;
+        let col = 3;
+        let square = row * BOARD_SIZE + col;
+        let blocking_piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
+        board.set_piece(square as u8, blocking_piece);
+
+        let moves = board.generate_pawn_moves(6, 3, piece.color);
+        assert!(moves.is_none());
+    }
+
+    #[test]
+    fn test_generate_pawn_moves_captures() {
+        let mut board = Board::new_empty_board();
+        let row = 6;
+        let col = 3;
+        let square = row * BOARD_SIZE + col;
+        let piece = Piece {
+            piece_type: Pawn,
+            color: Color::Black,
+        };
+        board.set_piece(square as u8, piece);
+
+        // capturable piece
+        let row = 5;
+        let col = 2;
+        let square = row * BOARD_SIZE + col;
+        let capturable_piece = Piece {
+            piece_type: Pawn,
+            color: Color::White,
+        };
+        board.set_piece(square as u8, capturable_piece);
+
+        let moves = board.generate_pawn_moves(6, 3, piece.color).unwrap();
+        assert_eq!(moves.len(), 3);
+
+        // Check that the pawn can move one square forward
+        assert!(moves.contains(&Move {
+            initial_square: 51,
+            target_square: 43,
+        }));
+    }
+
+    // TODO add test cases for en passant, and promotion
+    // End Pawn tests
+}

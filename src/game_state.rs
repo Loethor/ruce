@@ -47,14 +47,23 @@ pub enum ParseFenError {
     InvalidPiecePlacement(String),
 }
 
-// The FEN string is parsed into a GameState struct
-// The FEN string is a space-separated string of 6 fields
-// currently only board is raising errors if FEN string is invalid
-// TODO: add error handling for other fields
-// TODO: Error type should be properly defined
 impl FromStr for GameState {
     type Err = ParseFenError;
 
+    /// The FEN string is parsed into a GameState struct
+    /// The FEN string is a space-separated string of 6 fields
+    /// currently only board is raising errors if FEN string is invalid
+    /// TODO: add error handling for other fields
+    /// TODO: Error type should be properly defined
+    ///
+    /// # Examples
+    /// ```
+    /// use chess_engine::game_state::GameState;
+    /// use std::str::FromStr;
+    ///
+    /// let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    /// let game_state = GameState::from_str(fen).unwrap();
+    /// ```
     fn from_str(fen: &str) -> Result<Self, Self::Err> {
         let mut iter = fen.split_whitespace();
 
