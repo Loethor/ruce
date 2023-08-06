@@ -148,6 +148,11 @@ pub fn generate_knight_moves(board: &Board, row: u8, col: u8) -> Option<Vec<Move
 
 #[cfg(test)]
 mod tests {
+    use crate::board::{
+        moves::are_moves_equal,
+        piece::{Color, Piece, PieceType},
+    };
+
     use super::*;
 
     // Auxiliary function to sort a vector and return the sorted vector
@@ -161,25 +166,17 @@ mod tests {
     fn test_precalculate_knight_moves() {
         let knight_moves_map = precalculate_knight_moves();
 
-        // Test some specific squares
-
         // Test for square 'a1'
-        assert_eq!(
-            sort_vector(&knight_moves_map[&0]),
-            sort_vector(&vec![10, 17])
-        );
+        assert_eq!(sort_vector(&knight_moves_map[&0]), sort_vector(&[10, 17]));
 
         // Test for square 'd4'
         assert_eq!(
             sort_vector(&knight_moves_map[&27]),
-            sort_vector(&vec![10, 17, 12, 21, 33, 37, 44, 42])
+            sort_vector(&[10, 17, 12, 21, 33, 37, 44, 42])
         );
 
         // Test for square 'h8'
-        assert_eq!(
-            sort_vector(&knight_moves_map[&63]),
-            sort_vector(&vec![46, 53])
-        );
+        assert_eq!(sort_vector(&knight_moves_map[&63]), sort_vector(&[46, 53]));
     }
 
     #[test]
@@ -196,5 +193,126 @@ mod tests {
                 );
             }
         }
+    }
+    #[test]
+    fn test_generate_knight_moves_middle() {
+        let mut board = Board::new_empty_board();
+        let row = 3;
+        let col = 3;
+        let square = row * BOARD_SIZE + col;
+
+        let knight = Piece {
+            piece_type: PieceType::Knight,
+            color: Color::White,
+        };
+        board.set_piece(square, knight);
+
+        let moves = generate_knight_moves(&board, row, col).unwrap();
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 27,
+                target_square: 33,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 42,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 44,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 37,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 21,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 12,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 10,
+            },
+            Move {
+                initial_square: 27,
+                target_square: 17,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_generate_knight_moves_corner() {
+        let mut board = Board::new_empty_board();
+        let row = 0;
+        let col = 0;
+        let square = row * BOARD_SIZE + col;
+
+        let knight = Piece {
+            piece_type: PieceType::Knight,
+            color: Color::Black,
+        };
+        board.set_piece(square, knight);
+
+        let moves = generate_knight_moves(&board, row, col).unwrap();
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 0,
+                target_square: 17,
+            },
+            Move {
+                initial_square: 0,
+                target_square: 10,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_generate_knight_moves_side() {
+        let mut board = Board::new_empty_board();
+        let row = 2;
+        let col = 7;
+        let square = row * BOARD_SIZE + col;
+
+        let knight = Piece {
+            piece_type: PieceType::Knight,
+            color: Color::White,
+        };
+        board.set_piece(square, knight);
+
+        let moves = generate_knight_moves(&board, row, col).unwrap();
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 23,
+                target_square: 38,
+            },
+            Move {
+                initial_square: 23,
+                target_square: 29,
+            },
+            Move {
+                initial_square: 23,
+                target_square: 13,
+            },
+            Move {
+                initial_square: 23,
+                target_square: 6,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
     }
 }

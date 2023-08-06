@@ -2,9 +2,11 @@
 use crate::board::moves::Move;
 use crate::board::Board;
 
+use self::king::generate_king_moves;
 use self::knight::generate_knight_moves;
 use self::pawn::generate_pawn_moves;
 
+pub mod king;
 pub mod knight;
 pub mod pawn;
 
@@ -40,7 +42,7 @@ impl Piece {
             PieceType::Knight => None,
             PieceType::Rook => None,
             PieceType::Queen => None,
-            PieceType::King => None,
+            PieceType::King => generate_king_moves(board, row, col),
         }
     }
 }
