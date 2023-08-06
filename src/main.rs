@@ -14,4 +14,5 @@ fn main() {
     let game_state = game_state.unwrap();
     game_state.board.print_board();
     let moves = game_state.generate_moves();
+    println!("There are {} moves in this position.", moves.len());
 }
