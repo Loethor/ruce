@@ -151,8 +151,8 @@ mod tests {
     use super::*;
 
     // Auxiliary function to sort a vector and return the sorted vector
-    fn sort_vector(vec: &Vec<u8>) -> Vec<u8> {
-        let mut sorted_vec = vec.clone();
+    fn sort_vector(vec: &[u8]) -> Vec<u8> {
+        let mut sorted_vec = vec.to_owned();
         sorted_vec.sort();
         sorted_vec
     }
