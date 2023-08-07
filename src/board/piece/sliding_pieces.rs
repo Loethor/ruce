@@ -21,7 +21,7 @@ pub fn generate_sliding_moves(piece: Piece, board: &Board, row: u8, col: u8) -> 
         _ => return None,
     }
 
-    None
+    Some(moves)
 }
 
 fn generate_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec<Move> {
@@ -47,14 +47,10 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec
         }
         let target_row = row - i;
         let target_square = target_row * BOARD_SIZE + col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -62,6 +58,11 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
@@ -72,14 +73,9 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec
         }
         let target_row = row + i;
         let target_square = target_row * BOARD_SIZE + col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -87,6 +83,11 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
@@ -105,14 +106,10 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
         let target_row = row + i;
         let target_col = col - i;
         let target_square = target_row * BOARD_SIZE + target_col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -120,6 +117,11 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
@@ -131,14 +133,9 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
         let target_row = row + i;
         let target_col = col + i;
         let target_square = target_row * BOARD_SIZE + target_col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -146,6 +143,11 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
@@ -157,20 +159,13 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> V
     let square: u8 = row * BOARD_SIZE + col;
 
     // left moves
-    for i in 1..BOARD_SIZE {
-        if i > col {
-            break;
-        }
+    for i in 1..col + 1 {
         let target_col = col - i;
         let target_square = row * BOARD_SIZE + target_col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -178,24 +173,22 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> V
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
     // right moves
-    for i in 1..BOARD_SIZE {
-        if col + i >= BOARD_SIZE {
-            break;
-        }
+    for i in 1..BOARD_SIZE - col {
         let target_col = col + i;
         let target_square = row * BOARD_SIZE + target_col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -203,6 +196,11 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> V
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
@@ -221,14 +219,10 @@ fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -
         let target_row = row - i;
         let target_col = col - i;
         let target_square = target_row * BOARD_SIZE + target_col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -236,6 +230,11 @@ fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
@@ -247,14 +246,10 @@ fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -
         let target_row = row - i;
         let target_col = col + i;
         let target_square = target_row * BOARD_SIZE + target_col;
-        if board.get_piece(target_square).is_none() {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
-        } else {
+
+        if let Some(piece) = board.get_piece(target_square) {
             // Direction blocked by enemy piece
-            if board.get_piece(target_square).unwrap().color != color {
+            if piece.color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -262,6 +257,11 @@ fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -
             }
             // We break here because the direction is blocked
             break;
+        } else {
+            moves.push(Move {
+                initial_square: square,
+                target_square,
+            });
         }
     }
 
