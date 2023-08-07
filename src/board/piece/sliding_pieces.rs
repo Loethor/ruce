@@ -7,34 +7,16 @@ pub fn generate_sliding_moves(piece: Piece, board: &Board, row: u8, col: u8) -> 
 
     match piece.piece_type {
         PieceType::Bishop => {
-            let diagonal_moves = generate_diagonal_moves(board, row, col, piece.color);
-            if let Some(mut diagonal_moves) = diagonal_moves {
-                moves.append(&mut diagonal_moves);
-            }
+            moves.append(&mut generate_diagonal_moves(board, row, col, piece.color));
         }
         PieceType::Rook => {
-            let horizontal_moves = generate_horizontal_moves(board, row, col, piece.color);
-            if let Some(mut horizontal_moves) = horizontal_moves {
-                moves.append(&mut horizontal_moves);
-            }
-            let vertical_moves = generate_vertical_moves(board, row, col, piece.color);
-            if let Some(mut vertical_moves) = vertical_moves {
-                moves.append(&mut vertical_moves);
-            }
+            moves.append(&mut generate_horizontal_moves(board, row, col, piece.color));
+            moves.append(&mut generate_vertical_moves(board, row, col, piece.color));
         }
         PieceType::Queen => {
-            let diagonal_moves = generate_diagonal_moves(board, row, col, piece.color);
-            if let Some(mut diagonal_moves) = diagonal_moves {
-                moves.append(&mut diagonal_moves);
-            }
-            let horizontal_moves = generate_horizontal_moves(board, row, col, piece.color);
-            if let Some(mut horizontal_moves) = horizontal_moves {
-                moves.append(&mut horizontal_moves);
-            }
-            let vertical_moves = generate_vertical_moves(board, row, col, piece.color);
-            if let Some(mut vertical_moves) = vertical_moves {
-                moves.append(&mut vertical_moves);
-            }
+            moves.append(&mut generate_diagonal_moves(board, row, col, piece.color));
+            moves.append(&mut generate_horizontal_moves(board, row, col, piece.color));
+            moves.append(&mut generate_vertical_moves(board, row, col, piece.color));
         }
         _ => return None,
     }
@@ -42,27 +24,19 @@ pub fn generate_sliding_moves(piece: Piece, board: &Board, row: u8, col: u8) -> 
     None
 }
 
-fn generate_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> Option<Vec<Move>> {
+fn generate_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec<Move> {
     let mut moves: Vec<Move> = Vec::new();
 
     // up diagonal moves
-    let up_moves = generate_up_diagonal_moves(board, row, col, color);
-    if let Some(mut up_moves) = up_moves {
-        moves.append(&mut up_moves);
-    }
+    moves.append(&mut generate_up_diagonal_moves(board, row, col, color));
 
     // down diagonal moves
-    let down_moves = generate_down_diagonal_moves(board, row, col, color);
-    if let Some(mut down_moves) = down_moves {
-        moves.append(&mut down_moves);
-    }
+    moves.append(&mut generate_down_diagonal_moves(board, row, col, color));
 
-    if moves.is_empty() {
-        return None;
-    }
-    Some(moves)
+    moves
 }
-fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Option<Vec<Move>> {
+
+fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec<Move> {
     let mut moves: Vec<Move> = Vec::new();
     let square: u8 = row * BOARD_SIZE + col;
 
@@ -80,7 +54,7 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Opt
             });
         } else {
             // Direction blocked by enemy piece
-            if (board.get_piece(target_square).unwrap().color != color) {
+            if board.get_piece(target_square).unwrap().color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -116,14 +90,10 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Opt
         }
     }
 
-    if moves.is_empty() {
-        None
-    } else {
-        Some(moves)
-    }
+    moves
 }
 
-fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> Option<Vec<Move>> {
+fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec<Move> {
     let mut moves: Vec<Move> = Vec::new();
     let square: u8 = row * BOARD_SIZE + col;
 
@@ -179,14 +149,10 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
         }
     }
 
-    if moves.is_empty() {
-        None
-    } else {
-        Some(moves)
-    }
+    moves
 }
 
-fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> Option<Vec<Move>> {
+fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec<Move> {
     let mut moves: Vec<Move> = Vec::new();
     let square: u8 = row * BOARD_SIZE + col;
 
@@ -204,7 +170,7 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> O
             });
         } else {
             // Direction blocked by enemy piece
-            if (board.get_piece(target_square).unwrap().color != color) {
+            if board.get_piece(target_square).unwrap().color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -229,7 +195,7 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> O
             });
         } else {
             // Direction blocked by enemy piece
-            if (board.get_piece(target_square).unwrap().color != color) {
+            if board.get_piece(target_square).unwrap().color != color {
                 moves.push(Move {
                     initial_square: square,
                     target_square,
@@ -240,19 +206,10 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> O
         }
     }
 
-    if !moves.is_empty() {
-        Some(moves)
-    } else {
-        None
-    }
+    moves
 }
 
-fn generate_down_diagonal_moves(
-    board: &Board,
-    row: u8,
-    col: u8,
-    color: Color,
-) -> Option<Vec<Move>> {
+fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec<Move> {
     let mut moves: Vec<Move> = Vec::new();
     let square: u8 = row * BOARD_SIZE + col;
 
@@ -308,11 +265,7 @@ fn generate_down_diagonal_moves(
         }
     }
 
-    if moves.is_empty() {
-        None
-    } else {
-        Some(moves)
-    }
+    moves
 }
 
 #[cfg(test)]
@@ -325,8 +278,7 @@ mod horizontal_move_tests {
     fn test_horizontal_move() {
         let board = Board::new_empty_board();
         let moves = generate_horizontal_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
@@ -340,7 +292,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_horizontal_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -354,8 +306,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_horizontal_moves(&board, 0, 1, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 6);
+        assert_eq!(moves.len(), 6);
     }
 
     #[test]
@@ -369,8 +320,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_horizontal_moves(&board, 0, 1, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
@@ -384,8 +334,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_horizontal_moves(&board, 0, 6, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 6);
+        assert_eq!(moves.len(), 6);
     }
 
     #[test]
@@ -406,7 +355,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_horizontal_moves(&board, 0, 1, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -427,16 +376,14 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_horizontal_moves(&board, 0, 1, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 3);
+        assert_eq!(moves.len(), 3);
     }
 
     #[test]
     fn test_vertical_move() {
         let board = Board::new_empty_board();
         let moves = generate_vertical_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
@@ -450,7 +397,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_vertical_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -464,8 +411,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_vertical_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 1);
+        assert_eq!(moves.len(), 1);
     }
 
     #[test]
@@ -486,7 +432,7 @@ mod horizontal_move_tests {
             },
         );
         let moves = generate_vertical_moves(&board, 1, 0, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -508,8 +454,7 @@ mod horizontal_move_tests {
         );
 
         let moves = generate_vertical_moves(&board, 1, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 2);
+        assert_eq!(moves.len(), 2);
     }
 
     #[test]
@@ -531,8 +476,7 @@ mod horizontal_move_tests {
         );
 
         let moves = generate_vertical_moves(&board, 1, 0, Color::Black);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 2);
+        assert_eq!(moves.len(), 2);
     }
 
     #[test]
@@ -554,8 +498,7 @@ mod horizontal_move_tests {
         );
 
         let moves = generate_vertical_moves(&board, 1, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 4);
+        assert_eq!(moves.len(), 4);
     }
 }
 
@@ -570,8 +513,7 @@ mod diagonal_move_tests {
     fn test_diagonal_up_move() {
         let board = Board::new_empty_board();
         let moves = generate_diagonal_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
@@ -585,7 +527,7 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -599,8 +541,7 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 1);
+        assert_eq!(moves.len(), 1);
     }
 
     #[test]
@@ -621,7 +562,7 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 0, 4, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -643,8 +584,7 @@ mod diagonal_move_tests {
         );
 
         let moves = generate_diagonal_moves(&board, 0, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 2);
+        assert_eq!(moves.len(), 2);
     }
 
     #[test]
@@ -666,8 +606,7 @@ mod diagonal_move_tests {
         );
 
         let moves = generate_diagonal_moves(&board, 0, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
@@ -696,23 +635,21 @@ mod diagonal_move_tests {
         );
 
         let moves = generate_diagonal_moves(&board, 0, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 6);
+        assert_eq!(moves.len(), 6);
     }
 
     #[test]
     fn test_diagonal_down_move() {
         let board = Board::new_empty_board();
         let moves = generate_down_diagonal_moves(&board, 0, 0, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
     fn test_diagonal_down_move_top_row() {
         let board = Board::new_empty_board();
         let moves = generate_diagonal_moves(&board, 7, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
@@ -733,7 +670,7 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 7, 4, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -748,8 +685,7 @@ mod diagonal_move_tests {
         );
 
         let moves = generate_diagonal_moves(&board, 7, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 3);
+        assert_eq!(moves.len(), 3);
     }
 
     #[test]
@@ -764,8 +700,7 @@ mod diagonal_move_tests {
         );
 
         let moves = generate_diagonal_moves(&board, 7, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 4);
+        assert_eq!(moves.len(), 4);
     }
 
     #[test]
@@ -787,16 +722,14 @@ mod diagonal_move_tests {
         );
 
         let moves = generate_diagonal_moves(&board, 7, 4, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 7);
+        assert_eq!(moves.len(), 7);
     }
 
     #[test]
     fn test_diagonal_move_no_pieces() {
         let board = Board::new_empty_board();
         let moves = generate_diagonal_moves(&board, 3, 3, Color::White);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 13);
+        assert_eq!(moves.len(), 13);
     }
 
     #[test]
@@ -831,7 +764,7 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 3, 3, Color::White);
-        assert!(moves.is_none());
+        assert!(moves.is_empty());
     }
 
     #[test]
@@ -866,8 +799,7 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 3, 3, Color::Black);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 4);
+        assert_eq!(moves.len(), 4);
     }
 
     #[test]
@@ -902,7 +834,6 @@ mod diagonal_move_tests {
             },
         );
         let moves = generate_diagonal_moves(&board, 3, 3, Color::Black);
-        assert!(moves.is_some());
-        assert_eq!(moves.unwrap().len(), 9);
+        assert_eq!(moves.len(), 9);
     }
 }
