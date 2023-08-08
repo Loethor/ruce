@@ -238,12 +238,12 @@ mod tests {
         let row = 6;
         let col = 3;
         let square = row * BOARD_SIZE + col;
-        let piece = Piece {
+        let pawn = Piece {
             piece_type: Pawn,
             color: Black,
         };
-        board.set_piece(square, piece);
-        let moves = piece.generate_moves(&board, row, col).unwrap();
+        board.set_piece(square, pawn);
+        let moves = pawn.generate_moves(&board, row, col).unwrap();
 
         assert_eq!(moves.len(), 2);
 
