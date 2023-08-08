@@ -124,6 +124,14 @@ static DIAGONAL_DOWN_DIRECTIONS: [Direction; 2] = [
         |row, col, i| row < i || i > col,
     ),
 ];
+
+static LINEAR_DIRECTIONS: [Direction; 4] = [
+    HORIZONTAL_DIRECTIONS[0],
+    HORIZONTAL_DIRECTIONS[1],
+    VERTICAL_DIRECTIONS[0],
+    VERTICAL_DIRECTIONS[1],
+];
+
 static HORIZONTAL_DIRECTIONS: [Direction; 2] = [
     (
         |row, _| row,
@@ -140,13 +148,6 @@ static VERTICAL_DIRECTIONS: [Direction; 2] = [
         |row, _, i| row + i >= BOARD_SIZE,
     ),
     (|row, i| row - i, |col, _| col, |row, _, i| row < i),
-];
-
-static LINEAR_DIRECTIONS: [Direction; 4] = [
-    HORIZONTAL_DIRECTIONS[0],
-    HORIZONTAL_DIRECTIONS[1],
-    VERTICAL_DIRECTIONS[0],
-    VERTICAL_DIRECTIONS[1],
 ];
 
 #[cfg(test)]
