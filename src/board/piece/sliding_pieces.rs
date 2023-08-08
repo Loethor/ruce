@@ -58,12 +58,11 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     // up moves
@@ -83,12 +82,11 @@ fn generate_vertical_moves(board: &Board, row: u8, col: u8, color: Color) -> Vec
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     moves
@@ -117,12 +115,11 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     // up right moves
@@ -143,12 +140,11 @@ fn generate_up_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -> 
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     moves
@@ -173,12 +169,11 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> V
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     // right moves
@@ -196,12 +191,11 @@ fn generate_horizontal_moves(board: &Board, row: u8, col: u8, color: Color) -> V
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     moves
@@ -230,12 +224,11 @@ fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     // down right moves
@@ -257,12 +250,11 @@ fn generate_down_diagonal_moves(board: &Board, row: u8, col: u8, color: Color) -
             }
             // We break here because the direction is blocked
             break;
-        } else {
-            moves.push(Move {
-                initial_square: square,
-                target_square,
-            });
         }
+        moves.push(Move {
+            initial_square: square,
+            target_square,
+        });
     }
 
     moves
