@@ -66,7 +66,7 @@ mod king_tests {
         };
         board.set_piece(square, king);
 
-        let moves = generate_king_moves(&board, row, col).unwrap();
+        let moves = king.generate_moves(&board, row, col).unwrap();
 
         let expected_moves = vec![
             Move {
@@ -120,7 +120,7 @@ mod king_tests {
         };
         board.set_piece(square, king);
 
-        let moves = generate_king_moves(&board, row, col).unwrap();
+        let moves = king.generate_moves(&board, row, col).unwrap();
 
         let expected_moves = vec![
             Move {
@@ -154,7 +154,7 @@ mod king_tests {
         };
         board.set_piece(square, king);
 
-        let moves = generate_king_moves(&board, row, col).unwrap();
+        let moves = king.generate_moves(&board, row, col).unwrap();
 
         let expected_moves = vec![
             Move {

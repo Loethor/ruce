@@ -207,7 +207,7 @@ mod tests {
         };
         board.set_piece(square, knight);
 
-        let moves = generate_knight_moves(&board, row, col).unwrap();
+        let moves = knight.generate_moves(&board, row, col).unwrap();
 
         let expected_moves = vec![
             Move {
@@ -261,7 +261,7 @@ mod tests {
         };
         board.set_piece(square, knight);
 
-        let moves = generate_knight_moves(&board, row, col).unwrap();
+        let moves = knight.generate_moves(&board, row, col).unwrap();
 
         let expected_moves = vec![
             Move {
@@ -291,7 +291,7 @@ mod tests {
         };
         board.set_piece(square, knight);
 
-        let moves = generate_knight_moves(&board, row, col).unwrap();
+        let moves = knight.generate_moves(&board, row, col).unwrap();
 
         let expected_moves = vec![
             Move {

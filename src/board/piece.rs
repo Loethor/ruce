@@ -38,8 +38,8 @@ impl Piece {
     pub fn generate_moves(&self, board: &Board, row: u8, col: u8) -> Option<Vec<Move>> {
         match self.piece_type {
             PieceType::Pawn => generate_pawn_moves(board, row, col, self.color),
-            PieceType::Bishop => generate_knight_moves(board, row, col),
-            PieceType::Knight => None,
+            PieceType::Bishop => None,
+            PieceType::Knight => generate_knight_moves(board, row, col),
             PieceType::Rook => None,
             PieceType::Queen => None,
             PieceType::King => generate_king_moves(board, row, col),
