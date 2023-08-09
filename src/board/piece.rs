@@ -2,9 +2,11 @@
 use crate::board::moves::Move;
 use crate::board::Board;
 
+use self::king::generate_king_moves;
 use self::knight::generate_knight_moves;
 use self::pawn::generate_pawn_moves;
 
+pub mod king;
 pub mod knight;
 pub mod pawn;
 
@@ -36,11 +38,11 @@ impl Piece {
     pub fn generate_moves(&self, board: &Board, row: u8, col: u8) -> Option<Vec<Move>> {
         match self.piece_type {
             PieceType::Pawn => generate_pawn_moves(board, row, col, self.color),
-            PieceType::Bishop => generate_knight_moves(board, row, col),
-            PieceType::Knight => None,
+            PieceType::Bishop => None,
+            PieceType::Knight => generate_knight_moves(board, row, col),
             PieceType::Rook => None,
             PieceType::Queen => None,
-            PieceType::King => None,
+            PieceType::King => generate_king_moves(board, row, col),
         }
     }
 }
