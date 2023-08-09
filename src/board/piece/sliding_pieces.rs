@@ -2,6 +2,10 @@ use crate::board::{moves::Move, Board, BOARD_SIZE};
 
 use super::{Color, Piece, PieceType};
 
+/// This is the public API for generating moves for sliding pieces.
+/// Expected pieces are `Bishop`, `Rook`, and `Queen`.
+/// Based on the piece type, this function will generate moves in the
+/// diagonal directions, linear directions, or both.
 pub fn generate_sliding_moves(piece: Piece, board: &Board, row: u8, col: u8) -> Option<Vec<Move>> {
     let mut moves: Vec<Move> = Vec::new();
 
@@ -46,6 +50,12 @@ pub fn generate_sliding_moves(piece: Piece, board: &Board, row: u8, col: u8) -> 
     Some(moves)
 }
 
+/// Generate moves in the given directions.
+/// The directions are given as a tuple of functions.
+/// The first function is the row offset function, the second is the column offset function,
+/// and the third is the stopping condition function.
+/// The stopping condition function takes the current row, column, and offset as arguments.
+/// It returns true if the stopping condition is met, false otherwise.
 fn generate_moves(
     board: &Board,
     row: u8,
@@ -89,9 +99,13 @@ fn generate_moves(
     moves
 }
 
-// Define the possible directions and their associated functions and stopping conditions
+/// Define the possible directions and their associated functions and stopping conditions
+/// for sliding pieces.
+/// The first function is the row offset function, the second is the column offset function,
+/// and the third is the stopping condition function.
 type Direction = (fn(u8, u8) -> u8, fn(u8, u8) -> u8, fn(u8, u8, u8) -> bool);
 
+/// The DIAGONAL_DIRECTIONS consist of the diagonal up directions and the diagonal down directions.
 static DIAGONAL_DIRECTIONS: [Direction; 4] = [
     DIAGONAL_UP_DIRECTIONS[0],
     DIAGONAL_UP_DIRECTIONS[1],
@@ -99,6 +113,9 @@ static DIAGONAL_DIRECTIONS: [Direction; 4] = [
     DIAGONAL_DOWN_DIRECTIONS[1],
 ];
 
+/// The DIAGONAL_UP_DIRECTIONS consist of the diagonal up right direction and the diagonal up left direction.
+/// The diagonal up right direction is defined as the direction from the current square to the top right corner of the board.
+/// The diagonal up left direction is defined as the direction from the current square to the top left corner of the board.
 static DIAGONAL_UP_DIRECTIONS: [Direction; 2] = [
     (
         |row, i| row + i,
@@ -112,6 +129,9 @@ static DIAGONAL_UP_DIRECTIONS: [Direction; 2] = [
     ),
 ];
 
+/// The DIAGONAL_DOWN_DIRECTIONS consist of the diagonal down right direction and the diagonal down left direction.
+/// The diagonal down right direction is defined as the direction from the current square to the bottom right corner of the board.
+/// The diagonal down left direction is defined as the direction from the current square to the bottom left corner of the board.
 static DIAGONAL_DOWN_DIRECTIONS: [Direction; 2] = [
     (
         |row, i| row - i,
@@ -125,6 +145,7 @@ static DIAGONAL_DOWN_DIRECTIONS: [Direction; 2] = [
     ),
 ];
 
+/// The LINEAR_DIRECTIONS consist of the horizontal directions and the vertical directions.
 static LINEAR_DIRECTIONS: [Direction; 4] = [
     HORIZONTAL_DIRECTIONS[0],
     HORIZONTAL_DIRECTIONS[1],
@@ -132,6 +153,9 @@ static LINEAR_DIRECTIONS: [Direction; 4] = [
     VERTICAL_DIRECTIONS[1],
 ];
 
+/// The HORIZONTAL_DIRECTIONS consist of the horizontal right direction and the horizontal left direction.
+/// The horizontal right direction is defined as the direction from the current square to the right edge of the board.
+/// The horizontal left direction is defined as the direction from the current square to the left edge of the board.
 static HORIZONTAL_DIRECTIONS: [Direction; 2] = [
     (
         |row, _| row,
@@ -141,6 +165,9 @@ static HORIZONTAL_DIRECTIONS: [Direction; 2] = [
     (|row, _| row, |col, i| col - i, |_, col, i| col < i),
 ];
 
+/// The VERTICAL_DIRECTIONS consist of the vertical up direction and the vertical down direction.
+/// The vertical up direction is defined as the direction from the current square to the top edge of the board.
+/// The vertical down direction is defined as the direction from the current square to the bottom edge of the board.
 static VERTICAL_DIRECTIONS: [Direction; 2] = [
     (
         |row, i| row + i,
@@ -150,8 +177,9 @@ static VERTICAL_DIRECTIONS: [Direction; 2] = [
     (|row, i| row - i, |col, _| col, |row, _, i| row < i),
 ];
 
+/// This module tests the linear move generation.
 #[cfg(test)]
-mod horizontal_move_tests {
+mod linear_move_tests {
     use super::*;
     use crate::board::{self, Board};
     use crate::board::{Color, Piece, PieceType};
@@ -478,6 +506,7 @@ mod horizontal_move_tests {
     }
 }
 
+/// This module tests the diagonal move generation.
 #[cfg(test)]
 mod diagonal_move_tests {
 
@@ -814,6 +843,7 @@ mod diagonal_move_tests {
     }
 }
 
+/// This module tests the public API
 #[cfg(test)]
 mod piece_move_tests {
 
