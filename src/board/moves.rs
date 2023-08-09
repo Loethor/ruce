@@ -1,5 +1,8 @@
 //! Module containing chess moves related logic and structures.
 
+use std::collections::HashSet;
+use std::iter::FromIterator;
+
 /// Represents a move from an initial square to a target square on the chess board.
 ///
 /// The `Move` struct is used to represent a valid move made by a chess piece. It contains
@@ -23,11 +26,21 @@
 /// assert_eq!(chess_move.initial_square, 8);
 /// assert_eq!(chess_move.target_square, 24);
 /// ```
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Eq, Hash, Clone)]
 pub struct Move {
     /// The index of the initial square where the move starts.
     pub initial_square: u8,
 
     /// The index of the target square where the move ends.
     pub target_square: u8,
+}
+
+// Needed to compare two list of moves with different order of moves
+// Allow dead code because test is not enough to realise it is being used
+#[allow(dead_code)]
+pub fn are_moves_equal(moves1: &[Move], moves2: &[Move]) -> bool {
+    let set1: HashSet<_> = HashSet::from_iter(moves1.iter().cloned());
+    let set2: HashSet<_> = HashSet::from_iter(moves2.iter().cloned());
+
+    set1 == set2
 }

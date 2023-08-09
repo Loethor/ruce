@@ -2,10 +2,12 @@
 use crate::board::moves::Move;
 use crate::board::Board;
 
+use self::king::generate_king_moves;
 use self::knight::generate_knight_moves;
 use self::pawn::generate_pawn_moves;
 use self::sliding_pieces::generate_sliding_moves;
 
+pub mod king;
 pub mod knight;
 pub mod pawn;
 mod sliding_pieces;
@@ -42,7 +44,7 @@ impl Piece {
             PieceType::Knight => generate_knight_moves(board, row, col),
             PieceType::Rook => generate_sliding_moves(*self, board, row, col),
             PieceType::Queen => generate_sliding_moves(*self, board, row, col),
-            PieceType::King => None,
+            PieceType::King => generate_king_moves(board, row, col),
         }
     }
 }
