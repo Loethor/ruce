@@ -13,6 +13,8 @@ pub struct GameState {
     pub current_player: Color,
     /// The current turn number of the game.
     pub turn: u32,
+    /// The current result of the game
+    pub game_result: GameResult,
 }
 
 impl GameState {
@@ -80,7 +82,8 @@ impl FromStr for GameState {
         let mut game_state: GameState = GameState {
             board: Board::from_str(piece_placement)?,
             current_player: Color::White,
-            turn: 1,
+            turn: full_move_number.parse().unwrap(),
+            game_result: GameResult::Undecided,
         };
 
         // Parse the active color
@@ -102,4 +105,11 @@ impl FromStr for GameState {
 
         Ok(game_state)
     }
+}
+
+pub enum GameResult {
+    WhiteWon,
+    BlackWon,
+    Draw,
+    Undecided,
 }
