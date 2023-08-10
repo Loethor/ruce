@@ -5,10 +5,12 @@ use crate::board::Board;
 use self::king::generate_king_moves;
 use self::knight::generate_knight_moves;
 use self::pawn::generate_pawn_moves;
+use self::sliding_pieces::generate_sliding_moves;
 
 pub mod king;
 pub mod knight;
 pub mod pawn;
+mod sliding_pieces;
 
 /// Represents a chess piece, containing its type and color.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -38,10 +40,10 @@ impl Piece {
     pub fn generate_moves(&self, board: &Board, row: u8, col: u8) -> Option<Vec<Move>> {
         match self.piece_type {
             PieceType::Pawn => generate_pawn_moves(board, row, col, self.color),
-            PieceType::Bishop => None,
+            PieceType::Bishop => generate_sliding_moves(*self, board, row, col),
             PieceType::Knight => generate_knight_moves(board, row, col),
-            PieceType::Rook => None,
-            PieceType::Queen => None,
+            PieceType::Rook => generate_sliding_moves(*self, board, row, col),
+            PieceType::Queen => generate_sliding_moves(*self, board, row, col),
             PieceType::King => generate_king_moves(board, row, col),
         }
     }
