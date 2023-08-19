@@ -37,11 +37,67 @@ pub fn generate_king_moves(board: &Board, row: u8, col: u8) -> Option<Vec<Move>>
             }
         }
     }
+    generate_white_castling_moves(square, board, &mut moves);
+    generate_black_castling_moves(square, board, &mut moves);
 
     if !moves.is_empty() {
         Some(moves)
     } else {
         None
+    }
+}
+
+fn generate_black_castling_moves(square: u8, board: &Board, moves: &mut Vec<Move>) {
+    // checking for black castling
+    // king original position
+    if square == 60 {
+        // king side
+        if board.castling_availability.2
+            && board.get_piece(61).is_none()
+            && board.get_piece(62).is_none()
+        {
+            moves.push(Move {
+                initial_square: square,
+                target_square: 62,
+            });
+        }
+        // queen side
+        if board.castling_availability.3
+            && board.get_piece(59).is_none()
+            && board.get_piece(58).is_none()
+        {
+            moves.push(Move {
+                initial_square: square,
+                target_square: 58,
+            });
+        }
+    }
+}
+
+fn generate_white_castling_moves(square: u8, board: &Board, moves: &mut Vec<Move>) {
+    // checking for white castling
+    // king original position
+    if square == 4 {
+        // king side
+        if board.castling_availability.0
+            && board.get_piece(5).is_none()
+            && board.get_piece(6).is_none()
+        {
+            moves.push(Move {
+                initial_square: square,
+                target_square: 6,
+            });
+        }
+        // queen side
+        if board.castling_availability.1
+            && board.get_piece(3).is_none()
+            && board.get_piece(2).is_none()
+        {
+            moves.push(Move {
+                initial_square: square,
+                target_square: 2,
+            });
+        }
     }
 }
 
@@ -56,16 +112,14 @@ mod king_tests {
     #[test]
     fn test_generate_king_moves_middle() {
         let mut board = Board::new_empty_board();
-        let row = 3;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
+        let white_king_square = 27;
         let current_player = Color::White;
 
-        let king = Piece {
+        let white_king = Piece {
             piece_type: PieceType::King,
             color: Color::White,
         };
-        board.set_piece(square, king);
+        board.set_piece(white_king_square, white_king);
 
         let moves = board.generate_moves(current_player);
 
@@ -111,16 +165,14 @@ mod king_tests {
     #[test]
     fn test_generate_king_moves_corner() {
         let mut board = Board::new_empty_board();
-        let row = 0;
-        let col = 0;
-        let square = row * BOARD_SIZE + col;
         let current_player = Color::White;
+        let white_king_square = 0;
 
-        let king = Piece {
+        let white_king = Piece {
             piece_type: PieceType::King,
             color: Color::White,
         };
-        board.set_piece(square, king);
+        board.set_piece(white_king_square, white_king);
 
         let moves = board.generate_moves(current_player);
 
@@ -146,16 +198,14 @@ mod king_tests {
     #[test]
     fn test_generate_king_moves_side() {
         let mut board = Board::new_empty_board();
-        let row = 2;
-        let col = 7;
-        let square = row * BOARD_SIZE + col;
         let current_player = Color::White;
+        let white_king_square = 23;
 
-        let king = Piece {
+        let white_king = Piece {
             piece_type: PieceType::King,
             color: Color::White,
         };
-        board.set_piece(square, king);
+        board.set_piece(white_king_square, white_king);
 
         let moves = board.generate_moves(current_player);
 
@@ -179,6 +229,290 @@ mod king_tests {
             Move {
                 initial_square: 23,
                 target_square: 31,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_white_king_castling_both_sides() {
+        let mut board = Board::new_empty_board();
+        let current_player = Color::White;
+        let white_king_square = 4;
+
+        let white_king = Piece {
+            piece_type: PieceType::King,
+            color: Color::White,
+        };
+        board.set_piece(white_king_square, white_king);
+        board.castling_availability = (true, true, false, false);
+
+        let moves = board.generate_moves(current_player);
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 4,
+                target_square: 3,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 11,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 12,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 13,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 5,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 2,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 6,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_white_king_castling_queen_side() {
+        let mut board = Board::new_empty_board();
+        let current_player = Color::White;
+        let white_king_square = 4;
+
+        let white_king = Piece {
+            piece_type: PieceType::King,
+            color: Color::White,
+        };
+        board.set_piece(white_king_square, white_king);
+        board.castling_availability = (false, true, false, false);
+
+        let moves = board.generate_moves(current_player);
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 4,
+                target_square: 3,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 11,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 12,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 13,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 5,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 2,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_white_king_castling_king_side() {
+        let mut board = Board::new_empty_board();
+        let current_player = Color::White;
+        let white_king_square = 4;
+
+        let white_king = Piece {
+            piece_type: PieceType::King,
+            color: Color::White,
+        };
+        board.set_piece(white_king_square, white_king);
+        board.castling_availability = (true, false, false, false);
+
+        let moves = board.generate_moves(current_player);
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 4,
+                target_square: 3,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 11,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 12,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 13,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 5,
+            },
+            Move {
+                initial_square: 4,
+                target_square: 6,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_black_king_castling_both_sides() {
+        let mut board = Board::new_empty_board();
+        let current_player = Color::Black;
+        let white_king_square = 60;
+
+        let white_king = Piece {
+            piece_type: PieceType::King,
+            color: Color::Black,
+        };
+        board.set_piece(white_king_square, white_king);
+        board.castling_availability = (false, false, true, true);
+
+        let moves = board.generate_moves(current_player);
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 60,
+                target_square: 59,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 61,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 51,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 52,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 53,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 62,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 58,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_black_king_castling_queen_side() {
+        let mut board = Board::new_empty_board();
+        let current_player = Color::Black;
+        let white_king_square = 60;
+
+        let white_king = Piece {
+            piece_type: PieceType::King,
+            color: Color::Black,
+        };
+        board.set_piece(white_king_square, white_king);
+        board.castling_availability = (false, false, false, true);
+
+        let moves = board.generate_moves(current_player);
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 60,
+                target_square: 59,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 61,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 51,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 52,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 53,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 58,
+            },
+        ];
+
+        assert_eq!(moves.len(), expected_moves.len());
+        assert!(are_moves_equal(&moves, &expected_moves));
+    }
+
+    #[test]
+    fn test_black_king_castling_king_side() {
+        let mut board = Board::new_empty_board();
+        let current_player = Color::Black;
+        let white_king_square = 60;
+
+        let white_king = Piece {
+            piece_type: PieceType::King,
+            color: Color::Black,
+        };
+        board.set_piece(white_king_square, white_king);
+        board.castling_availability = (false, false, true, false);
+
+        let moves = board.generate_moves(current_player);
+
+        let expected_moves = vec![
+            Move {
+                initial_square: 60,
+                target_square: 59,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 61,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 51,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 52,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 53,
+            },
+            Move {
+                initial_square: 60,
+                target_square: 62,
             },
         ];
 
