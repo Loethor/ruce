@@ -59,6 +59,7 @@ mod king_tests {
         let row = 3;
         let col = 3;
         let square = row * BOARD_SIZE + col;
+        let current_player = Color::White;
 
         let king = Piece {
             piece_type: PieceType::King,
@@ -66,7 +67,7 @@ mod king_tests {
         };
         board.set_piece(square, king);
 
-        let moves = king.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         let expected_moves = vec![
             Move {
@@ -113,14 +114,15 @@ mod king_tests {
         let row = 0;
         let col = 0;
         let square = row * BOARD_SIZE + col;
+        let current_player = Color::White;
 
         let king = Piece {
             piece_type: PieceType::King,
-            color: Color::Black,
+            color: Color::White,
         };
         board.set_piece(square, king);
 
-        let moves = king.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         let expected_moves = vec![
             Move {
@@ -147,6 +149,7 @@ mod king_tests {
         let row = 2;
         let col = 7;
         let square = row * BOARD_SIZE + col;
+        let current_player = Color::White;
 
         let king = Piece {
             piece_type: PieceType::King,
@@ -154,7 +157,7 @@ mod king_tests {
         };
         board.set_piece(square, king);
 
-        let moves = king.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         let expected_moves = vec![
             Move {
