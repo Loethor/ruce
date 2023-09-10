@@ -72,7 +72,7 @@ impl FromStr for GameState {
         // Parse the FEN string
         let piece_placement = iter.next().expect("Invalid FEN: missing piece placement");
         let active_color = iter.next().expect("Invalid FEN: missing active color");
-        let _castling_availability = iter
+        let castling_availability = iter
             .next()
             .expect("Invalid FEN: missing castling availability");
         let _en_passant_target = iter.next().expect("Invalid FEN: missing en passant target");
@@ -98,8 +98,10 @@ impl FromStr for GameState {
             .parse()
             .expect("Invalid FEN: invalid full move number");
 
+        // castling availabilty
+        game_state.board.castling_availability = parse_castling_availablity(castling_availability);
+
         // TODO missing other rules:
-        // castling
         // en passant
         // half move clock
 
@@ -112,4 +114,55 @@ pub enum GameResult {
     BlackWon,
     Draw,
     Undecided,
+}
+
+/// Parses a castling availability string and returns a tuple representing castling availability.
+///
+/// The castling availability string is a sequence of characters representing the availability of
+/// castling for both white and black players. The characters used are:
+/// - 'K': King-side castling for white.
+/// - 'Q': Queen-side castling for white.
+/// - 'k': King-side castling for black.
+/// - 'q': Queen-side castling for black.
+///
+/// # Arguments
+///
+/// * `castling_availabilyt_str` - The castling availability string to parse.
+///
+/// # Returns
+///
+/// A tuple with four elements representing the castling availability:
+/// * Element 0: Availability of King-side castling for white.
+/// * Element 1: Availability of Queen-side castling for white.
+/// * Element 2: Availability of King-side castling for black.
+/// * Element 3: Availability of Queen-side castling for black.
+///
+/// # Examples
+///
+/// ```
+/// let castling_str = "KQkq";
+/// let castling_availability = parse_castling_availablity(castling_str);
+/// assert_eq!(castling_availability, (true, true, true, true));
+/// ```
+///
+/// ```
+/// let castling_str = "Kq";
+/// let castling_availability = parse_castling_availablity(castling_str);
+/// assert_eq!(castling_availability, (true, false, false, true));
+/// ```
+fn parse_castling_availablity(castling_availabilyt_str: &str) -> (bool, bool, bool, bool) {
+    let mut castling_availablity = (false, false, false, false);
+    if castling_availabilyt_str.contains('K') {
+        castling_availablity.0 = true;
+    }
+    if castling_availabilyt_str.contains('Q') {
+        castling_availablity.1 = true;
+    }
+    if castling_availabilyt_str.contains('k') {
+        castling_availablity.2 = true;
+    }
+    if castling_availabilyt_str.contains('q') {
+        castling_availablity.3 = true;
+    }
+    castling_availablity
 }

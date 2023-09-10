@@ -6,7 +6,7 @@ use super::{Color, Piece, PieceType};
 /// Expected pieces are `Bishop`, `Rook`, and `Queen`.
 /// Based on the piece type, this function will generate moves in the
 /// diagonal directions, linear directions, or both.
-pub fn generate_sliding_moves(piece: Piece, board: &Board, row: u8, col: u8) -> Option<Vec<Move>> {
+pub fn generate_sliding_moves(board: &Board, row: u8, col: u8, piece: Piece) -> Option<Vec<Move>> {
     let mut moves: Vec<Move> = Vec::new();
 
     match piece.piece_type {
@@ -858,7 +858,7 @@ mod piece_move_tests {
             piece_type: PieceType::Queen,
             color: Color::White,
         };
-        let moves = generate_sliding_moves(queen, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, queen);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 27);
     }
@@ -877,7 +877,7 @@ mod piece_move_tests {
                 color: Color::White,
             },
         );
-        let moves = generate_sliding_moves(queen, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, queen);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 24);
     }
@@ -903,7 +903,7 @@ mod piece_move_tests {
                 color: Color::Black,
             },
         );
-        let moves = generate_sliding_moves(queen, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, queen);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 22);
     }
@@ -915,7 +915,7 @@ mod piece_move_tests {
             piece_type: PieceType::Rook,
             color: Color::White,
         };
-        let moves = generate_sliding_moves(rook, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, rook);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 14);
     }
@@ -934,7 +934,7 @@ mod piece_move_tests {
                 color: Color::Black,
             },
         );
-        let moves = generate_sliding_moves(rook, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, rook);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 12);
     }
@@ -960,7 +960,7 @@ mod piece_move_tests {
                 color: Color::White,
             },
         );
-        let moves = generate_sliding_moves(rook, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, rook);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 9);
     }
@@ -972,7 +972,7 @@ mod piece_move_tests {
             piece_type: PieceType::Bishop,
             color: Color::White,
         };
-        let moves = generate_sliding_moves(bishop, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, bishop);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 13);
     }
@@ -991,7 +991,7 @@ mod piece_move_tests {
                 color: Color::Black,
             },
         );
-        let moves = generate_sliding_moves(bishop, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, bishop);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 10);
     }
@@ -1017,7 +1017,7 @@ mod piece_move_tests {
                 color: Color::White,
             },
         );
-        let moves = generate_sliding_moves(bishop, &board, 3, 3);
+        let moves = generate_sliding_moves(&board, 3, 3, bishop);
         assert!(moves.is_some());
         assert_eq!(moves.unwrap().len(), 8);
     }

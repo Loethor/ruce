@@ -207,15 +207,14 @@ mod tests {
     #[test]
     fn test_generate_pawn_moves_white() {
         let mut board = Board::new_empty_board();
-        let row = 1;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let pawn = Piece {
+        let current_player = Color::White;
+        let white_pawn_square = 11;
+        let white_pawn = Piece {
             piece_type: Pawn,
             color: White,
         };
-        board.set_piece(square, pawn);
-        let moves = pawn.generate_moves(&board, row, col).unwrap();
+        board.set_piece(white_pawn_square, white_pawn);
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 2);
 
@@ -235,15 +234,14 @@ mod tests {
     #[test]
     fn test_generate_pawn_moves_black() {
         let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
-        let pawn = Piece {
+        let current_player = Color::Black;
+        let black_pawn_square = 51;
+        let black_pawn = Piece {
             piece_type: Pawn,
             color: Black,
         };
-        board.set_piece(square, pawn);
-        let moves = pawn.generate_moves(&board, row, col).unwrap();
+        board.set_piece(black_pawn_square, black_pawn);
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 2);
 
@@ -263,11 +261,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_moves_white_only_one_square_move_allowed() {
         let mut board = Board::new_empty_board();
-        let row = 1;
-        let col = 3;
-
-        let white_pawn_square = row * BOARD_SIZE + col;
-        let black_pawn_square = (row + 2) * BOARD_SIZE + col;
+        let current_player = Color::White;
+        let white_pawn_square = 11;
+        let black_pawn_square = 27;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -281,7 +277,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = white_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 1);
 
@@ -301,11 +297,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_black_only_one_square_allowed() {
         let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 3;
-
-        let white_pawn_square = (row - 2) * BOARD_SIZE + col;
-        let black_pawn_square = row * BOARD_SIZE + col;
+        let current_player = Color::Black;
+        let white_pawn_square = 35;
+        let black_pawn_square = 51;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -319,7 +313,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = black_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 1);
 
@@ -339,11 +333,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_white_takes_piece_from_starting_row() {
         let mut board = Board::new_empty_board();
-        let row = 1;
-        let col = 3;
-
-        let white_pawn_square = row * BOARD_SIZE + col;
-        let black_pawn_square = (row + 1) * BOARD_SIZE + col + 1;
+        let current_player = Color::White;
+        let white_pawn_square = 11;
+        let black_pawn_square = 20;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -357,7 +349,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = white_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 3);
 
@@ -383,11 +375,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_white_takes_piece() {
         let mut board = Board::new_empty_board();
-        let row = 3;
-        let col = 3;
-
-        let white_pawn_square = row * BOARD_SIZE + col;
-        let black_pawn_square = (row + 1) * BOARD_SIZE + col + 1;
+        let current_player = Color::White;
+        let white_pawn_square = 27;
+        let black_pawn_square = 36;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -401,7 +391,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = white_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 2);
 
@@ -421,11 +411,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_black_takes_piece_from_starting_row() {
         let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 3;
-
-        let white_pawn_square = (row - 1) * BOARD_SIZE + col + 1;
-        let black_pawn_square = row * BOARD_SIZE + col;
+        let current_player = Color::Black;
+        let white_pawn_square = 44;
+        let black_pawn_square = 51;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -438,8 +426,7 @@ mod tests {
 
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
-
-        let moves = black_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 3);
 
@@ -465,11 +452,10 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_black_takes_piece() {
         let mut board = Board::new_empty_board();
-        let row = 4;
-        let col = 3;
+        let current_player = Color::Black;
 
-        let white_pawn_square = (row - 1) * BOARD_SIZE + col - 1;
-        let black_pawn_square = row * BOARD_SIZE + col;
+        let white_pawn_square = 26;
+        let black_pawn_square = 35;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -483,7 +469,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = black_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 2);
 
@@ -503,11 +489,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_white_on_first_col() {
         let mut board = Board::new_empty_board();
-        let row = 3;
-        let col = 0;
-
-        let white_pawn_square = row * BOARD_SIZE + col;
-        let black_pawn_square = (row + 1) * BOARD_SIZE + col + 1;
+        let current_player = Color::White;
+        let white_pawn_square = 24;
+        let black_pawn_square = 33;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -521,7 +505,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = white_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 2);
 
@@ -541,11 +525,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_white_on_last_col() {
         let mut board = Board::new_empty_board();
-        let row = 3;
-        let col = 7;
-
-        let white_pawn_square = row * BOARD_SIZE + col;
-        let black_pawn_square = (row + 1) * BOARD_SIZE + col - 1;
+        let current_player = Color::White;
+        let white_pawn_square = 31;
+        let black_pawn_square = 38;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -559,7 +541,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = white_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 2);
 
@@ -579,11 +561,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_black_on_first_col() {
         let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 0;
-
-        let white_pawn_square = (row - 1) * BOARD_SIZE + col + 1;
-        let black_pawn_square = row * BOARD_SIZE + col;
+        let white_pawn_square = 41;
+        let black_pawn_square = 48;
+        let current_player = Color::Black;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -597,7 +577,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = black_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 3);
 
@@ -623,11 +603,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_black_on_last_col() {
         let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 7;
-
-        let white_pawn_square = (row - 1) * BOARD_SIZE + col - 1;
-        let black_pawn_square = row * BOARD_SIZE + col;
+        let current_player = Color::Black;
+        let white_pawn_square = 46;
+        let black_pawn_square = 55;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -641,7 +619,7 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = black_pawn.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         assert_eq!(moves.len(), 3);
 
@@ -667,11 +645,9 @@ mod tests {
     #[test]
     fn test_generate_pawn_move_white_blocked() {
         let mut board = Board::new_empty_board();
-        let row = 3;
-        let col = 0;
-
-        let white_pawn_square = row * BOARD_SIZE + col;
-        let black_pawn_square = (row + 1) * BOARD_SIZE + col;
+        let current_player = Color::White;
+        let white_pawn_square = 24;
+        let black_pawn_square = 32;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -685,19 +661,18 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = white_pawn.generate_moves(&board, row, col);
+        let moves = board.generate_moves(current_player);
 
-        assert_eq!(moves, None);
+        assert_eq!(moves, vec![]);
     }
 
     #[test]
     fn test_generate_pawn_move_black_blocked() {
         let mut board = Board::new_empty_board();
-        let row = 6;
-        let col = 0;
+        let current_player = Color::Black;
 
-        let white_pawn_square = (row - 1) * BOARD_SIZE + col;
-        let black_pawn_square = row * BOARD_SIZE + col;
+        let white_pawn_square = 40;
+        let black_pawn_square = 48;
 
         let white_pawn = Piece {
             piece_type: Pawn,
@@ -711,8 +686,8 @@ mod tests {
         board.set_piece(white_pawn_square, white_pawn);
         board.set_piece(black_pawn_square, black_pawn);
 
-        let moves = black_pawn.generate_moves(&board, row, col);
+        let moves = board.generate_moves(current_player);
 
-        assert_eq!(moves, None);
+        assert_eq!(moves, vec![]);
     }
 }

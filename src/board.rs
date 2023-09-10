@@ -11,7 +11,10 @@ use crate::board::piece::{Color, Piece, PieceType};
 use crate::game_state::ParseFenError;
 use std::str::FromStr;
 
-use self::piece::knight::precalculate_knight_moves;
+use self::piece::king::generate_king_moves;
+use self::piece::knight::{generate_knight_moves, precalculate_knight_moves};
+use self::piece::pawn::generate_pawn_moves;
+use self::piece::sliding_pieces::generate_sliding_moves;
 
 /// Represents the size of the chess board (number of rows and columns).
 pub const BOARD_SIZE: u8 = 8;
@@ -21,6 +24,7 @@ pub const BOARD_SIZE: u8 = 8;
 pub struct Board {
     pub squares: Vec<Option<Piece>>,
     pub knight_moves_map: HashMap<u8, Vec<u8>>,
+    pub castling_availability: (bool, bool, bool, bool),
 }
 
 impl Board {
@@ -48,6 +52,7 @@ impl Board {
         Board {
             squares,
             knight_moves_map: precalculate_knight_moves(),
+            castling_availability: (false, false, false, false),
         }
     }
 
@@ -118,7 +123,14 @@ impl Board {
                     if piece.color != current_player {
                         continue;
                     }
-                    let piece_moves = piece.generate_moves(self, row, col);
+                    let piece_moves = match piece.piece_type {
+                        PieceType::Pawn => generate_pawn_moves(self, row, col, piece.color),
+                        PieceType::Bishop => generate_sliding_moves(self, row, col, *piece),
+                        PieceType::Knight => generate_knight_moves(self, row, col),
+                        PieceType::Rook => generate_sliding_moves(self, row, col, *piece),
+                        PieceType::Queen => generate_sliding_moves(self, row, col, *piece),
+                        PieceType::King => generate_king_moves(self, row, col),
+                    };
 
                     // Add it to the list if there is a move
                     if let Some(valid_move) = piece_moves {

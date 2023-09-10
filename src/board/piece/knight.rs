@@ -197,17 +197,16 @@ mod tests {
     #[test]
     fn test_generate_knight_moves_middle() {
         let mut board = Board::new_empty_board();
-        let row = 3;
-        let col = 3;
-        let square = row * BOARD_SIZE + col;
+        let current_player = Color::White;
+        let white_knight_square = 27;
 
-        let knight = Piece {
+        let white_knight = Piece {
             piece_type: PieceType::Knight,
             color: Color::White,
         };
-        board.set_piece(square, knight);
+        board.set_piece(white_knight_square, white_knight);
 
-        let moves = knight.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         let expected_moves = vec![
             Move {
@@ -251,17 +250,16 @@ mod tests {
     #[test]
     fn test_generate_knight_moves_corner() {
         let mut board = Board::new_empty_board();
-        let row = 0;
-        let col = 0;
-        let square = row * BOARD_SIZE + col;
+        let current_player = Color::White;
+        let white_knight_square = 0;
 
-        let knight = Piece {
+        let white_knight = Piece {
             piece_type: PieceType::Knight,
-            color: Color::Black,
+            color: Color::White,
         };
-        board.set_piece(square, knight);
+        board.set_piece(white_knight_square, white_knight);
 
-        let moves = knight.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         let expected_moves = vec![
             Move {
@@ -281,17 +279,15 @@ mod tests {
     #[test]
     fn test_generate_knight_moves_side() {
         let mut board = Board::new_empty_board();
-        let row = 2;
-        let col = 7;
-        let square = row * BOARD_SIZE + col;
-
-        let knight = Piece {
+        let current_player = Color::White;
+        let white_knight_square = 23;
+        let white_knight = Piece {
             piece_type: PieceType::Knight,
             color: Color::White,
         };
-        board.set_piece(square, knight);
+        board.set_piece(white_knight_square, white_knight);
 
-        let moves = knight.generate_moves(&board, row, col).unwrap();
+        let moves = board.generate_moves(current_player);
 
         let expected_moves = vec![
             Move {
